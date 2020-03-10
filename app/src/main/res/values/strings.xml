@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">AllPrintApp</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Jorge Leitão</string>
+    <string name="nav_header_subtitle">geral@allprint.pt</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Definições</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Loja</string>
+    <string name="menu_slideshow">Cenas</string>
+
+    <string name="home_second">Home Second</string>
+    <string name="guest_register_here">Esqueceu a Password?</string>
+    <string name="enter_username">E-Mail....</string>
+    <string name="enter_password">Palavra Passe...</string>
+    <string name="login">Entrar</string>
+    <string name="menu_logout">Sair</string>
+    <string name="defnicoes">Definições</string>
+    <string name="entrar">ENTRAR</string>
+</resources>
