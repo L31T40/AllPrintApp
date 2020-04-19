@@ -98,6 +98,8 @@ class GalleryFragment : Fragment() {
 
             // WebView settings
             webview.fitsSystemWindows = true
+            webview.getSettings().setBuiltInZoomControls(true)
+            webview.getSettings().setDisplayZoomControls(false)
 
             /* if SDK version is greater of 19 then activate hardware acceleration
             otherwise activate software acceleration  */
