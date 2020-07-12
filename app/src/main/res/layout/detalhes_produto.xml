@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/imageViewProduto"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/textViewRef"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ref" />
+
+        <TextView
+            android:id="@+id/textViewDistrito"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Creator Name"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/textViewConcelho"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Creator Name"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/textViewCenas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Creator Name"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="63dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editTextQuantidade2"
+                android:layout_width="174dp"
+                android:layout_height="33dp"
+                android:layout_weight="1"
+                android:autoSizeTextType="none"
+                android:autoText="true"
+                android:background="@drawable/my_border"
+                android:ems="10"
+                android:inputType="number"
+                android:maxLength="4"
+                android:paddingEnd="2dp"
+                android:text="0"
+                android:textAlignment="textEnd"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="#878383"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:tooltipText="Quantidade"
+                android:typeface="sans" />
+
+            <ImageView
+                android:id="@+id/imageView"
+
+                android:layout_width="181dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:focusable="auto"
+                android:focusableInTouchMode="true"
+                app:srcCompat="@android:drawable/ic_input_add" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

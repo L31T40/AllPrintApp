@@ -18,4 +18,6 @@ interface RegisterInterface {
     companion object {
         const val REGIURL = "https://demonuts.com/Demonuts/JsonTest/Tennis/"
     }
+
+
 }

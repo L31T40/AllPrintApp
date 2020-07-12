@@ -20,27 +20,29 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        android:fitsSystemWindows="true">
 
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottom_app_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_gravity="bottom"
-            android:background="#FF9800"
-
+            app:backgroundTint="@color/colorYellowDark"
             app:fabAlignmentMode="center"
-            app:navigationIcon="@drawable/baseline_menu_white_24" />
+            app:fabCradleRoundedCornerRadius="120dp"
+            app:navigationIcon="@android:drawable/sym_action_chat"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#FF5722"
+            android:background="#FF9800"
             android:clickable="true"
-            android:src="?android:attr/fingerprintAuthDrawable"
-            app:backgroundTint="#F44336"
+            android:src="@drawable/ic_plus_sign"
             app:layout_anchor="@+id/bottom_app_bar"
             app:layout_anchorGravity="top|center" />
 

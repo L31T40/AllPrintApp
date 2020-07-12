@@ -1,6 +1,5 @@
 package com.example.allprintapp
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.widget.Toast
@@ -12,12 +11,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.android.volley.AuthFailureError
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.example.allprintapp.Login.PreferenceHelper
-import com.example.allprintapp.ui.gallery.GalleryFragment
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.content_main.*
+import java.util.HashMap
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,9 +31,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
-       // setSupportActionBar(toolbar)
-        toolbar.isActivated = true
-        setSupportActionBar(bottom_app_bar)
+        setSupportActionBar(toolbar)
+
+        getJSONListagemDistrito()
+
+        //toolbar.isActivated = true
+       // setSupportActionBar(bottom_app_bar)
 //        val fab: FloatingActionButton = findViewById(R.id.fab)
 //        fab.setOnClickListener { view ->
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -43,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
+
         appBarConfiguration = AppBarConfiguration(setOf(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_logout), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -65,13 +70,22 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_gallery -> {
                     Toast.makeText(this,"Loja", Toast.LENGTH_LONG).show()
-                    val fragment: GalleryFragment? = GalleryFragment()
+                    val fragment: ListagemProdutosFragment?=ListagemProdutosFragment()
                     val transaction = supportFragmentManager.beginTransaction()
                     if (fragment != null) {
                         transaction.replace(R.id.nav_host_fragment, fragment)
                     }
                     transaction.commit()
                 }
+//                R.id.nav_gallery -> {
+//                    Toast.makeText(this,"Loja", Toast.LENGTH_LONG).show()
+//                    val fragment: ListProductsFragment? = ListProductsFragment()
+//                    val transaction = supportFragmentManager.beginTransaction()
+//                    if (fragment != null) {
+//                        transaction.replace(R.id.nav_host_fragment, fragment)
+//                    }
+//                    transaction.commit()
+//                }
 
                 R.id.nav_logout -> {
                     Toast.makeText(this, "sair", Toast.LENGTH_LONG).show()
@@ -109,6 +123,30 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+
+    fun getJSONListagemDistrito() {
+        val url1= "http://beta.allprint.pt/wp-content/uploads/2020/ListagemDistritos-XPTO.json"
+
+        val requestQueue = Volley.newRequestQueue(this)
+        val stringRequest: StringRequest = object : StringRequest(Method.POST,url1, Response.Listener { response ->
+            Toast.makeText(applicationContext, response, Toast.LENGTH_LONG).show()
+        }, Response.ErrorListener { volleyerror ->
+            //progressDialog.dismiss()
+            Toast.makeText(applicationContext, volleyerror.message, Toast.LENGTH_LONG).show()
+        }) {
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String>? {
+                val headers: MutableMap<String, String> = HashMap()
+
+                return headers
+            }
+
+
+        }
+
+        requestQueue.add(stringRequest)
     }
 }
 

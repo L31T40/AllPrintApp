@@ -1,4 +1,4 @@
-package com.example.allprintapp.ui.gallery
+package com.example.allprintapp.ui.listaprodutos
 
 import android.graphics.Bitmap
 import android.os.Build
@@ -17,9 +17,9 @@ import androidx.lifecycle.ViewModelProviders
 import com.example.allprintapp.R
 import kotlinx.android.synthetic.main.fragment_gallery.*
 
-class GalleryFragment : Fragment() {
+class ListProductsFragment : Fragment() {
 
-    private lateinit var galleryViewModel: GalleryViewModel
+    private lateinit var galleryViewModel: ListProductsViewModel
     private val url = "http://app.allprint.pt/"
 
 
@@ -32,7 +32,7 @@ class GalleryFragment : Fragment() {
     ): View? {
 
    galleryViewModel =
-                ViewModelProviders.of(this).get(GalleryViewModel::class.java)
+                ViewModelProviders.of(this).get(ListProductsViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_gallery, container, false)
         val textView: TextView = root.findViewById(R.id.text_gallery)
 
@@ -50,7 +50,7 @@ class GalleryFragment : Fragment() {
 
             // Enable and setup web view cache
 
-            val appCachePath = activity!!.cacheDir.absolutePath
+            val appCachePath = requireActivity().cacheDir.absolutePath
 //            webSettings.setAppCachePath(appCachePath)
 
             settings.setAppCacheEnabled(true)
@@ -124,12 +124,10 @@ class GalleryFragment : Fragment() {
 
         })
 
-
-
-
-
-
         return root
     }
+
+
+
 
 }

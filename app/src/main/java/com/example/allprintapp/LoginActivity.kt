@@ -33,12 +33,6 @@ class LoginActivity : AppCompatActivity() {
         etEmail = findViewById<View>(R.id.etusername) as EditText
         etPass = findViewById<View>(R.id.etpassword) as EditText
         btnlogin = findViewById<View>(R.id.btn_entrar) as Button
- /*       tvreg = findViewById<View>(R.id.tvreg) as TextView
-        tvreg!!.setOnClickListener {
-            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }*/
         btnlogin!!.setOnClickListener { loginUser() }
     }
 
@@ -80,49 +74,6 @@ class LoginActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<String?>, t: Throwable) {}
             })
         }
-    }
-
-
-
-    private fun loginUserXXX() {
-//        val username = etUname!!.text.toString().trim { it <= ' ' }
-//        val password = etPass!!.text.toString().trim { it <= ' ' }
-        val email1 = "cenas@cenas.pt"
-        val password1 = "12345"
-
-
-
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(LoginInterface.LOGINURL)
-            //.addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        Toast.makeText(this@LoginActivity, "ENTROU", Toast.LENGTH_LONG).show()
-
-        val api = retrofit.create(LoginInterface::class.java)
-
-        api.getUserLogin(email1, password1)?.enqueue(object : Callback<String?> {
-            override fun onResponse(call: Call<String?>, response: Response<String?>) {
-                Log.d("Resposta -> ", "Login Response: $response")
-                Toast.makeText(this@LoginActivity, response.body().toString(), Toast.LENGTH_LONG).show()
-                Log.i("Responsestring", response.body().toString())
-
-                //Toast.makeText()
-                if (response.isSuccessful) {
-                    if (response.body() != null) {
-                        Log.i("onSuccess", response.body().toString())
-                        val jsonresponse = response.body().toString()
-                        parseLoginData(jsonresponse)
-                    } else {
-                        Log.i("onEmptyResponse", "Não Devolveu resposta") //Toast.makeText(getContext(),"Nothing returned",Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<String?>, t: Throwable) {}
-        })
     }
 
 

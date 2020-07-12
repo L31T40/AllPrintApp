@@ -1,12 +1,14 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
 <!--    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">-->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
 
         <item name="colorPrimary">@color/colorYellowDark</item>
-        <item name="colorPrimaryDark">@color/colorYellowDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/colorDarkText</item>
+        <item name="colorAccent">@android:color/holo_orange_dark</item>
+
+
     </style>
 
 
@@ -14,8 +16,30 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/bg_gradient_orange_black</item>
+        <item name="toolbarStyle">@style/Widget.Toolbar</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
+    <style name="ToolbarTheme" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">@drawable/bg_gradient_orange_black</item>
+        <item name="background">@android:color/black</item>
+        <item name="titleTextAppearance">@style/TextAppearance.AppCompat.Title</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+    </style>
+
+    <style name="ThemeOverlay.MaterialComponents.BottomAppBar.Primary" parent="Widget.AppCompat.Toolbar" tools:ignore="PrivateResource">
+        <item name="android:background">@drawable/bg_gradient_orange_black</item>
+        <item name="background">@android:color/black</item>
+        <item name="titleTextAppearance">@style/TextAppearance.AppCompat.Title</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+    </style>
+    <style name="ToolbarTitleTheme">
+        <item name="android:textColor">@android:color/holo_red_dark</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
