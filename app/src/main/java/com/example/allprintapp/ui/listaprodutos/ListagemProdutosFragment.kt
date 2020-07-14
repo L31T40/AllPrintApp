@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,8 +20,8 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.allprintapp.R
-import com.example.allprintapp.ui.Utils.ListagemDistritos
-import com.example.allprintapp.ui.Utils.Utils
+import com.example.allprintapp.ui.utils.ListagemDistritos
+import com.example.allprintapp.ui.utils.Utils
 import org.json.JSONArray
 import org.json.JSONException
 import java.util.*
@@ -28,17 +29,20 @@ import java.util.*
 /**
  * A fragment representing a list of Items.
  */
-class ListagemProdutosFragment : Fragment(), AdapterView.OnItemClickListener {
+class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClickListener {
+    interface OnFragmentInteractionListener {
+
+    }
 
     private var columnCount = 1
     var ma: Activity? = null
 
 
-    private var mRecyclerView: RecyclerView? = null
+    var mRecyclerView: RecyclerView? = null
     //    private var mExampleAdapter: ExampleAdapter? = null
     var mProdutosAdapter: ProdutosRecyclerAdapter? = null
     //    private var mExampleList: ArrayList<ExampleItem>? = null
-    var mProductsList: ArrayList<ProdutosLista>? = null
+    var mListaProdutos: ArrayList<ProdutosLista>? = null
     var mListagemDistritos: ArrayList<ListagemDistritos>? = null
     var mRequestQueue: RequestQueue? = null
     var mRequestQueueDistritos: RequestQueue? = null
@@ -53,96 +57,38 @@ class ListagemProdutosFragment : Fragment(), AdapterView.OnItemClickListener {
     }
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_listagem_produtos_recyclerview, container, false)
-        //val view = inflater!!.inflate(R.layout.fragment_listagem_produtos_cardview, container, false)
-
-        //setContentView(R.layout.ListagemProdutosFragment)
-        mRecyclerView = view?.findViewById(R.id.recycler_view_lista_produtos)
-
-        try {
-            mRecyclerView!!.setHasFixedSize(true)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        //mRecyclerView.setHasFixedSize(true)
-
-
-        //mRecyclerView!!.layoutManager= LinearLayoutManager(ma)
-        mRecyclerView!!.layoutManager = LinearLayoutManager(context)
-        mProductsList = ArrayList()
-        mListagemDistritos = ArrayList()
-        mRequestQueue = Volley.newRequestQueue(context)
-        // jsonParse()
-        getDataProdutos()
-        //  parseJSON()
-
-
-
-        fun getJSONListagemDistritos() {
-            val urlDistritos= "http://beta.allprint.pt/wp-content/uploads/2020/ListagemDistritos-XPTO.json"
-            val requestQueue = Volley.newRequestQueue(context)
-            Log.i(ContentValues.TAG, "+==========================Nome $urlDistritos")
-            val stringRequest: StringRequest = object : StringRequest(Method.POST,urlDistritos, Response.Listener { response ->
-                try {
-//                val cenas = JSONObject(response)
-//                val jsonArray:JSONArray =  cenas.getJSONArray("cenas")
-                    val jsonArray =  JSONArray(response)
-                    val tamanho = jsonArray.length()
-                    Log.i(ContentValues.TAG, "+==========================tamanho $tamanho")
-                    for (i in 0 until jsonArray.length()) {
-                        val hit = jsonArray.getJSONObject(i)
-                        val idDistrito = hit.getString("IdDistrito")
-                        val distrito = hit.getString("Distrito")
-                        val idConcelho = hit.getString("IdConcelho")
-                        val concelho = hit.getString("Concelho")
-                        val prefixo = hit.getString("Prefixo")
-                        Log.i(ContentValues.TAG, "+==========================Prefixo -> $prefixo")
-                        try {
-                            mListagemDistritos!!.add(ListagemDistritos( idDistrito,  distrito,  idConcelho, concelho,  prefixo))
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-                Toast.makeText(context, response, Toast.LENGTH_LONG).show()
-            }, Response.ErrorListener { volleyerror ->
-                Toast.makeText(context, volleyerror.message, Toast.LENGTH_LONG).show()
-            }) {
-                @Throws(AuthFailureError::class)
-                override fun getHeaders(): Map<String, String>? {
-                    val headers: MutableMap<String, String> = HashMap()
-                    headers["Content-Type"] = "application/x-www-form-urlencoded"
-                    headers["Accept"] ="application/json"
-                    return headers
-                }
-            }
-            //mRequestQueueDistritos!!.add(stringRequest)
-            requestQueue!!.add(stringRequest)
-        }
-
-
-
-
-        fun onItemClick(position: Int) {
-            val detailIntent = Intent(context, DetalhesProdutosActivity::class.java)
-            val clickedItem = mProductsList!![position]
-            detailIntent.putExtra(EXTRA_URL, clickedItem.imageUrl)
-            detailIntent.putExtra(EXTRA_ID, clickedItem.id)
-            detailIntent.putExtra(EXTRA_NAME, clickedItem.nome)
-            startActivity(detailIntent)
-        }
-
-
 
 
         return view
+       // return inflater.inflate(R.layout.fragment_listagem_produtos_recyclerview, container, false)
+    }
+
+
+
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        mListaProdutos = ArrayList()
+        mListagemDistritos = ArrayList()
+        /**Definir api service*/
+        mRequestQueue = Volley.newRequestQueue(context)
+        /**Parse a json pedido ao middleware*/
+        getDataProdutos()
+
+    }
+
+
+
+    private fun loadRecyclerView() {
+        mRecyclerView = view?.findViewById(R.id.recycler_view_lista_produtos)
+        mProdutosAdapter = activity?.let { ProdutosRecyclerAdapter(it, mListaProdutos!!) }
+        mRecyclerView!!.setHasFixedSize(true)
+        mRecyclerView!!.layoutManager = LinearLayoutManager(context)
+        mProdutosAdapter!!.setOnItemClickListener(this)
+        mRecyclerView!!.adapter = mProdutosAdapter
+
     }
 
 
@@ -153,8 +99,7 @@ class ListagemProdutosFragment : Fragment(), AdapterView.OnItemClickListener {
 //        progressDialog.setMessage(getString(R.string.loading))
 //        progressDialog.setCancelable(false)
 //        progressDialog.show()
-        //Defining api service
-        //val requestQueue = Volley.newRequestQueue(this)
+
         Log.i(ContentValues.TAG, "+==========================Nome $url")
         val stringRequest: StringRequest = object : StringRequest(Method.POST,url, Response.Listener { response ->
             try {
@@ -169,14 +114,11 @@ class ListagemProdutosFragment : Fragment(), AdapterView.OnItemClickListener {
                     val descricaocurta = hit.getString("short_description")
                     val stockqt = hit.getString("stock_quantity")
                     val imageUrl = hit.getString("image")
-                    Log.i(ContentValues.TAG, "+==========================Nome $mProductsList")
-                    mProductsList!!.add(ProdutosLista(id, nome, preco, descricaocurta, stockqt,  imageUrl))
+                    Log.i(ContentValues.TAG, "+==========================Nome $mListaProdutos")
+                    mListaProdutos!!.add(ProdutosLista(id, nome, preco, descricaocurta, stockqt,  imageUrl))
                 }
-                mProdutosAdapter = activity?.let { ProdutosRecyclerAdapter(it, mProductsList!!) }
 
-
-                mRecyclerView!!.adapter = mProdutosAdapter
-                mProdutosAdapter!!.setOnItemClickListener(this)
+                loadRecyclerView()
 
             } catch (e: JSONException) {
                 e.printStackTrace()
@@ -198,6 +140,9 @@ class ListagemProdutosFragment : Fragment(), AdapterView.OnItemClickListener {
         }
         mRequestQueue!!.add(stringRequest)
     }
+
+
+
 
 
 /*
@@ -289,8 +234,49 @@ class ListagemProdutosFragment : Fragment(), AdapterView.OnItemClickListener {
 */
 
 
-
-
+    fun getJSONListagemDistritos() {
+        val urlDistritos= "http://beta.allprint.pt/wp-content/uploads/2020/ListagemDistritos-XPTO.json"
+        val requestQueue = Volley.newRequestQueue(context)
+        Log.i(ContentValues.TAG, "+==========================Nome $urlDistritos")
+        val stringRequest: StringRequest = object : StringRequest(Method.POST,urlDistritos, Response.Listener { response ->
+            try {
+//                val cenas = JSONObject(response)
+//                val jsonArray:JSONArray =  cenas.getJSONArray("cenas")
+                val jsonArray =  JSONArray(response)
+                val tamanho = jsonArray.length()
+                Log.i(ContentValues.TAG, "+==========================tamanho $tamanho")
+                for (i in 0 until jsonArray.length()) {
+                    val hit = jsonArray.getJSONObject(i)
+                    val idDistrito = hit.getString("IdDistrito")
+                    val distrito = hit.getString("Distrito")
+                    val idConcelho = hit.getString("IdConcelho")
+                    val concelho = hit.getString("Concelho")
+                    val prefixo = hit.getString("Prefixo")
+                    Log.i(ContentValues.TAG, "+==========================Prefixo -> $prefixo")
+                    try {
+                        mListagemDistritos!!.add(ListagemDistritos( idDistrito,  distrito,  idConcelho, concelho,  prefixo))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+            Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+        }, Response.ErrorListener { volleyerror ->
+            Toast.makeText(context, volleyerror.message, Toast.LENGTH_LONG).show()
+        }) {
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String>? {
+                val headers: MutableMap<String, String> = HashMap()
+                headers["Content-Type"] = "application/x-www-form-urlencoded"
+                headers["Accept"] ="application/json"
+                return headers
+            }
+        }
+        //mRequestQueueDistritos!!.add(stringRequest)
+        requestQueue!!.add(stringRequest)
+    }
 
 
 
@@ -315,8 +301,19 @@ class ListagemProdutosFragment : Fragment(), AdapterView.OnItemClickListener {
 
     }
 
-    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+
+
+    override fun onItemClick(position: Int) {
         TODO("Not yet implemented")
-    }
+
+
+        }
+
+
+
+//    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+//        TODO("Not yet implemented")
+//    }
 }
 

@@ -17,10 +17,12 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.allprintapp.Login.PreferenceHelper
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment
+import com.example.allprintapp.ui.listaprodutos.ProdutosRecyclerAdapter
+import com.example.allprintapp.ui.slideshow.SlideshowFragment
 import com.google.android.material.navigation.NavigationView
 import java.util.HashMap
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),ProdutosRecyclerAdapter.OnItemClickListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mDrawerLayout: DrawerLayout
@@ -33,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        getJSONListagemDistrito()
+     /**   getJSONListagemDistrito()*/
 
         //toolbar.isActivated = true
        // setSupportActionBar(bottom_app_bar)
@@ -49,13 +51,13 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
 
         appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_logout), drawerLayout)
+                R.id.nav_home, R.id.nav_loja, R.id.nav_slideshow, R.id.nav_logout), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
         mDrawerLayout = findViewById(R.id.drawer_layout)
 
-        //val navigationView: NavigationView = findViewById(R.id.nav_view)
+ /**       //val navigationView: NavigationView = findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener { menuItem ->
             // set item as selected to persist highlight
             menuItem.isChecked = true
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_home -> {
                     Toast.makeText(this, "Home", Toast.LENGTH_LONG).show()
                 }
-                R.id.nav_gallery -> {
+                R.id.nav_loja -> {
                     Toast.makeText(this,"Loja", Toast.LENGTH_LONG).show()
                     val fragment: ListagemProdutosFragment?=ListagemProdutosFragment()
                     val transaction = supportFragmentManager.beginTransaction()
@@ -77,20 +79,20 @@ class MainActivity : AppCompatActivity() {
                     }
                     transaction.commit()
                 }
-//                R.id.nav_gallery -> {
-//                    Toast.makeText(this,"Loja", Toast.LENGTH_LONG).show()
-//                    val fragment: ListProductsFragment? = ListProductsFragment()
-//                    val transaction = supportFragmentManager.beginTransaction()
-//                    if (fragment != null) {
-//                        transaction.replace(R.id.nav_host_fragment, fragment)
-//                    }
-//                    transaction.commit()
-//                }
+                R.id.nav_slideshow -> {
+                    Toast.makeText(this,"slide", Toast.LENGTH_LONG).show()
+                    val fragment: SlideshowFragment? = SlideshowFragment()
+                    val transaction = supportFragmentManager.beginTransaction()
+                    if (fragment != null) {
+                        transaction.replace(R.id.nav_host_fragment, fragment)
+                    }
+                    transaction.commit()
+                }
 
                 R.id.nav_logout -> {
                     Toast.makeText(this, "sair", Toast.LENGTH_LONG).show()
 
-//                    preferenceHelper!!.putIsLogin(false)
+                   preferenceHelper!!.putIsLogin(false)
                     finishAffinity()
                 }
 
@@ -99,7 +101,7 @@ class MainActivity : AppCompatActivity() {
             // For example, swap UI fragments here
 
             true
-        }
+        } **/
 
 
 //
@@ -147,6 +149,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         requestQueue.add(stringRequest)
+    }
+
+    override fun onItemClick(position: Int) {
+        TODO("Not yet implemented")
     }
 }
 

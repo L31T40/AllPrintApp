@@ -25,17 +25,6 @@
         android:fitsSystemWindows="true">
 
 
-        <com.google.android.material.bottomappbar.BottomAppBar
-            android:id="@+id/bottom_app_bar"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_gravity="bottom"
-            app:backgroundTint="@color/colorYellowDark"
-            app:fabAlignmentMode="center"
-            app:fabCradleRoundedCornerRadius="120dp"
-            app:navigationIcon="@android:drawable/sym_action_chat"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
@@ -44,7 +33,19 @@
             android:clickable="true"
             android:src="@drawable/ic_plus_sign"
             app:layout_anchor="@+id/bottom_app_bar"
-            app:layout_anchorGravity="top|center" />
+            app:layout_anchorGravity="bottom|center" />
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottom_app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+            app:backgroundTint="@color/colorYellowDark"
+            app:fabAlignmentMode="center"
+            app:fabCradleRoundedCornerRadius="120dp"
+            app:hideOnScroll="true"
+            app:navigationIcon="@android:drawable/sym_action_chat"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

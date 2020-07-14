@@ -4,9 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.example.allprintapp.R
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.detalhes_produto.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,11 +36,28 @@ class DetalhesProdutoFragment : DialogFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.detalhes_produto, container, false)
+
+        val view = inflater.inflate(R.layout.detalhes_produto, container, false)
+//        // Inflate the layout for this fragment
+//        val view = inflater.inflate(R.layout.detalhes_produto, container, false)
+//
+//        val intent = intent
+//        val imageUrl = intent.getStringExtra(ListagemProdutosFragment.EXTRA_URL)
+//        val nome = intent.getStringExtra(ListagemProdutosFragment.EXTRA_NAME)
+//        val id = intent.getStringExtra(ListagemProdutosFragment.EXTRA_ID)
+//
+        val imageView = imageViewProduto.findViewById<ImageView>(R.id.imageViewProduto)
+        val textViewName = textViewDistrito.findViewById<TextView>(R.id.textViewDistrito)
+        val textViewid = textViewRef.findViewById<TextView>(R.id.textViewRef)
+//        Picasso.get().load(imageUrl).fit().centerInside().into(imageView)
+//        textViewName.text = nome
+//        textViewid.text = id
+////
+        return view
     }
 
     companion object {
@@ -58,4 +79,6 @@ class DetalhesProdutoFragment : DialogFragment() {
                 }
             }
     }
+
+
 }

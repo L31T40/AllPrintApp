@@ -1,4 +1,4 @@
-package com.example.allprintapp.ui.Utils;
+package com.example.allprintapp.ui.utils;
 
 import android.app.Application;
 
