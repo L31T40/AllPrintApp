@@ -2,16 +2,16 @@ package com.example.allprintapp.ui.listaprodutos
 
 import android.app.Activity
 import android.content.ContentValues
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.AuthFailureError
@@ -30,9 +30,7 @@ import java.util.*
  * A fragment representing a list of Items.
  */
 class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClickListener {
-    interface OnFragmentInteractionListener {
 
-    }
 
     private var columnCount = 1
     var ma: Activity? = null
@@ -42,11 +40,19 @@ class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClick
     //    private var mExampleAdapter: ExampleAdapter? = null
     var mProdutosAdapter: ProdutosRecyclerAdapter? = null
     //    private var mExampleList: ArrayList<ExampleItem>? = null
-    var mListaProdutos: ArrayList<ProdutosLista>? = null
+    var mModelProdutoListagems: ArrayList<ListagemProdutosModel>? = null
     var mListagemDistritos: ArrayList<ListagemDistritos>? = null
     var mRequestQueue: RequestQueue? = null
     var mRequestQueueDistritos: RequestQueue? = null
     var requestQueue: RequestQueue? = null
+
+
+    lateinit var mContext: AppCompatActivity
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        this.mContext = context as AppCompatActivity
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +68,7 @@ class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClick
 
 
         return view
-       // return inflater.inflate(R.layout.fragment_listagem_produtos_recyclerview, container, false)
+        // return inflater.inflate(R.layout.fragment_listagem_produtos_recyclerview, container, false)
     }
 
 
@@ -70,7 +76,7 @@ class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClick
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mListaProdutos = ArrayList()
+        mModelProdutoListagems = ArrayList()
         mListagemDistritos = ArrayList()
         /**Definir api service*/
         mRequestQueue = Volley.newRequestQueue(context)
@@ -83,7 +89,7 @@ class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClick
 
     private fun loadRecyclerView() {
         mRecyclerView = view?.findViewById(R.id.recycler_view_lista_produtos)
-        mProdutosAdapter = activity?.let { ProdutosRecyclerAdapter(it, mListaProdutos!!) }
+        mProdutosAdapter = activity?.let { ProdutosRecyclerAdapter(it, mModelProdutoListagems!!) }
         mRecyclerView!!.setHasFixedSize(true)
         mRecyclerView!!.layoutManager = LinearLayoutManager(context)
         mProdutosAdapter!!.setOnItemClickListener(this)
@@ -114,8 +120,8 @@ class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClick
                     val descricaocurta = hit.getString("short_description")
                     val stockqt = hit.getString("stock_quantity")
                     val imageUrl = hit.getString("image")
-                    Log.i(ContentValues.TAG, "+==========================Nome $mListaProdutos")
-                    mListaProdutos!!.add(ProdutosLista(id, nome, preco, descricaocurta, stockqt,  imageUrl))
+                    Log.i(ContentValues.TAG, "+==========================Nome $mModelProdutoListagems")
+                    mModelProdutoListagems!!.add(ListagemProdutosModel(id, nome, preco, descricaocurta, stockqt,  imageUrl))
                 }
 
                 loadRecyclerView()
@@ -123,10 +129,10 @@ class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClick
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
-            Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+            //Toast.makeText(context, response, Toast.LENGTH_LONG).show()
         }, Response.ErrorListener { volleyerror ->
             //progressDialog.dismiss()
-            Toast.makeText(context, volleyerror.message, Toast.LENGTH_LONG).show()
+            //Toast.makeText(context, volleyerror.message, Toast.LENGTH_LONG).show()
         }) {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String>? {
@@ -234,6 +240,12 @@ class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClick
 */
 
 
+//    override fun onItemClick(position: Int) {
+//        val detalhesFragment = DetalhesProdutoFragment()
+//        val fragmentManager = (context as FragmentActivity).fragmentManager // fragmentManager strikethrough text
+//        detalhesFragment.show(fragmentManager, "TAG")
+//    }
+
     fun getJSONListagemDistritos() {
         val urlDistritos= "http://beta.allprint.pt/wp-content/uploads/2020/ListagemDistritos-XPTO.json"
         val requestQueue = Volley.newRequestQueue(context)
@@ -287,33 +299,38 @@ class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClick
         const val EXTRA_URL = "imageUrl"
         const val EXTRA_ID = "id"
         const val EXTRA_NAME = "name"
+        const val EXTRA_PRICE = "price"
+        const val EXTRA_DESCRICAO = "short_description"
+        const val EXTRA_STOCK = "stock_quantity"
 
-        // TODO: Customize parameter initialization
-        @JvmStatic
-        fun newInstance(columnCount: Int) =
-            ListagemProdutosFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_COLUMN_COUNT, columnCount)
-                }
-            }
+//        var mModelProdutoListagems: ArrayList<ListagemProdutosModel>? = null
+//        // TODO: Customize parameter initialization
+//        @JvmStatic
+//        fun newInstance(position: Int): DetalhesProdutoFragment {
+//            val clickedItem = mModelProdutoListagems!![position]
+//            val fragment = DetalhesProdutoFragment()
+//            val args = Bundle()
+//            args.putString(EXTRA_URL, clickedItem.imageUrl)
+//            args.putString(EXTRA_ID, clickedItem.id)
+//            args.putString(EXTRA_NAME, clickedItem.nome)
+//            fragment.setArguments(args)
+//            return fragment
+//        }
+
+//        fun newInstance(columnCount: Int) =
+//            ListagemProdutosFragment().apply {
+//                arguments = Bundle().apply {
+//                    putInt(ARG_COLUMN_COUNT, columnCount)
+//                }
+//            }
 
 
 
     }
 
-
-
-
     override fun onItemClick(position: Int) {
         TODO("Not yet implemented")
+    }
 
 
-        }
-
-
-
-//    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//        TODO("Not yet implemented")
-//    }
 }
-

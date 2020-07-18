@@ -19,10 +19,11 @@
         app:navGraph="@navigation/mobile_navigation" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/cenas"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        tools:context=".MainActivity">
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
