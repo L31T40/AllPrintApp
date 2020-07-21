@@ -193,6 +193,10 @@ class Utils(var ma: Activity) {
      * } */
     companion object {
 
+
+
+
+
         fun formatoHora(hour: Int): Int {
             var hour = hour
             val format: String

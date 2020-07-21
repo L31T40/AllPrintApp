@@ -1,108 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frame_layout_detalhes_produto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_margin="8dp"
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:id="@+id/detalhes_cardview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="522dp"
+        android:background="#FFFFFF"
         android:orientation="vertical"
         android:padding="16dp">
 
         <ImageView
             android:id="@+id/imageViewProdutoDetalhes"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_width="330dp"
+            android:layout_height="209dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="2dp"
+            android:contentDescription="TODO"
             android:src="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/textViewRefDetalhes"
-            android:layout_width="99dp"
-            android:layout_height="wrap_content"
+            android:layout_width="163dp"
+            android:layout_height="34dp"
+            android:layout_marginBottom="2dp"
+            android:layout_gravity="center"
             android:text="Ref"
+            android:textAlignment="center"
             android:textSize="24sp"
             android:textStyle="bold" />
 
+
         <TextView
-            android:id="@+id/textViewDistritoDetalhes"
-            android:layout_width="match_parent"
+            android:id="@+id/textViewConcelhoDetalhes"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="2dp"
             android:text="Distrito"
+            android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/textViewConcelhoDetalhes"
-            android:layout_width="match_parent"
+            android:id="@+id/textViewDistritoDetalhes"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="2dp"
             android:text="Concelho"
+            android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/textViewDescricaoDetalhes"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="2dp"
             android:text="Descriçao"
+            android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/textViewPrecoDetalhes"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_gravity="center"
             android:text="Peço"
+            android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/textViewStockDetalhes"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_gravity="center"
             android:text="Stock"
+            android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btn_SairDetalhes"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/editTextQuantidadeDetalhes"
-                android:layout_width="174dp"
-                android:layout_height="33dp"
-                android:layout_weight="1"
-                android:autoSizeTextType="none"
-                android:autoText="true"
-                android:background="@drawable/my_border"
-                android:ems="10"
-                android:inputType="number"
-                android:maxLength="4"
-                android:paddingEnd="2dp"
-                android:text="0"
-                android:textAlignment="textEnd"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="#878383"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:tooltipText="Quantidade"
-                android:typeface="sans" />
-
-            <ImageView
-                android:id="@+id/imageViewDetalhes"
-
-                android:layout_width="181dp"
-                android:layout_height="36dp"
-                android:layout_weight="1"
-                android:focusable="auto"
-                android:focusableInTouchMode="true"
-                app:srcCompat="@android:drawable/ic_input_add" />
-        </LinearLayout>
+            android:text="SAIR" />
 
     </LinearLayout>
 

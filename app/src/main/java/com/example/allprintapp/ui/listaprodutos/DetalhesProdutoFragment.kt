@@ -4,7 +4,10 @@ package com.example.allprintapp.ui.listaprodutos
 
 
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -41,15 +44,46 @@ class DetalhesProdutoFragment : DialogFragment(){//,View.OnClickListener {
             param2 = it.getString(ARG_PARAM2)
         }
     }*/
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        val style = STYLE_NO_FRAME
-        val theme = R.style.AppTheme_PopupOverlay
-        setStyle(style, theme)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.CYAN))
-        return dialog
-    }
+interface OnItemClickListener {
+    fun onItemClick(position: Int)
+}
+//
+//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+//
+////        if (arguments != null)
+////        {
+////            if (arguments?.getBoolean("notAlertDialog")!!)
+////            {
+////                return super.onCreateDialog(savedInstanceState)
+////            }
+////        }
+//
+//
+////
+////        val builder = AlertDialog.Builder(activity)
+////        builder.setPositiveButton("SAIR", object: DialogInterface.OnClickListener {
+////            override fun onClick(dialog:DialogInterface, which:Int) {
+////                dismiss()
+////            }
+////        })
+////
+////        val style = STYLE_NORMAL
+////       // val theme = android.R.style.Theme_Black_NoTitleBar_Fullscreen
+////        val theme = R.style.AppTheme_PopupOverlay
+////        setStyle(style, theme)
+//
+//
+//
+//
+////        return builder.create()
+//
+////        val dialog = super.onCreateDialog(savedInstanceState)
+////        val style = STYLE_NO_FRAME
+////        val theme = R.style.AppTheme_PopupOverlay
+////        setStyle(style, theme)
+////        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.CYAN))
+//        return null
+//    }
 
 
     // @SuppressLint("SetTextI18n")
@@ -61,6 +95,8 @@ class DetalhesProdutoFragment : DialogFragment(){//,View.OnClickListener {
 
         val view = inflater.inflate(R.layout.fragment_detalhes_produto, container, false)
 
+        this.dialog?.setTitle("BANAAN")
+
         val textViewName: TextView = view.findViewById(R.id.textViewDistritoDetalhes) as TextView
         textViewName.text = arguments?.getString(EXTRA_NAME)
 
@@ -71,6 +107,10 @@ class DetalhesProdutoFragment : DialogFragment(){//,View.OnClickListener {
         val textViewStock: TextView = view.findViewById(R.id.textViewRefDetalhes) as TextView
         val textStock = "Stock: " + arguments?.getString(EXTRA_STOCK)
         textViewStock.text = textStock
+
+        val textViewDescricao: TextView = view.findViewById(R.id.textViewDescricaoDetalhes) as TextView
+        val textDescricao = arguments?.getString(EXTRA_DESCRICAO)
+        textViewDescricao.text = textDescricao
 
         val textViewPrice: TextView = view.findViewById(R.id.textViewPrecoDetalhes) as TextView
         val textPrice = "Preço: " + arguments?.getString(EXTRA_PRICE)

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ConstraintLayoutLogin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_gradient_black_orange"
@@ -11,86 +12,80 @@
     android:theme="@style/Theme.AppCompat.NoActionBar"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:layout_width="265dp"
-        android:layout_height="213dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="100dp"
-        android:src="@drawable/logo1" />
 
-    <EditText
-        android:id="@+id/etusername"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/custom_edit_text"
-        android:hint="E-mail..."
-        android:paddingLeft="20dp"
-        android:paddingTop="15dp"
-        android:paddingRight="20dp"
-        android:paddingBottom="15dp"
-        android:textColor="#F44336"
-        android:textColorHint="#FFC107" />
-
-    <EditText
-        android:id="@+id/etpassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/custom_edit_text"
-        android:hint="Password..."
-        android:paddingLeft="20dp"
-        android:paddingTop="15dp"
-        android:paddingRight="20dp"
-        android:paddingBottom="15dp"
-        android:textColor="#F44336"
-        android:textColorHint="#FFC107" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:gravity="center"
-        android:text="Esqueceu a password?" />
-
-    <Button
-        android:id="@+id/btn_entrar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/custom_login_btn"
-        android:padding="16dp"
-        android:text="@string/entrar"
-        android:textAllCaps="false"
-        android:textColor="@color/colorWhiteBG"
-        android:textSize="18dp" />
+    <ProgressBar
+        android:id="@+id/progressbar_login"
+        style="@android:style/Widget.ProgressBar.Large"
+        android:layout_width="200dp"
+        android:layout_height="76dp"
+        android:indeterminate="true"
+        android:progressTint="#FFFFFF"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/login_form" />
 
     <LinearLayout
+        android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom|center"
-        android:orientation="horizontal"
-        android:paddingBottom="30dp">
-        <!--
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="265dp"
+            android:layout_height="213dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="100dp"
+            android:src="@drawable/logo1" />
+
+        <EditText
+            android:id="@+id/etusername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/custom_edit_text"
+            android:hint="E-mail..."
+            android:paddingLeft="20dp"
+            android:paddingTop="15dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="15dp"
+            android:textColor="#F44336"
+            android:textColorHint="#FFC107" />
+
+        <EditText
+            android:id="@+id/etpassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/custom_edit_text"
+            android:hint="Password..."
+            android:paddingLeft="20dp"
+            android:paddingTop="15dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="15dp"
+            android:textColor="#F44336"
+            android:textColorHint="#FFC107" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Don't have an account?  "
-            android:textColor="@color/colorDarkText"
-            tools:visibility="invisible" />
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:text="Esqueceu a password?" />
 
-        <TextView
-            android:id="@+id/text_sign_up"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/btn_entrar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign up"
-            android:textColor="@color/colorYellow"
-            android:textStyle="bold"
-            tools:visibility="invisible" />
--->
-
+            android:layout_marginTop="15dp"
+            android:background="@drawable/custom_login_btn"
+            android:padding="16dp"
+            android:text="@string/entrar"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhiteBG"
+            android:textSize="18dp" />
     </LinearLayout>
 
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

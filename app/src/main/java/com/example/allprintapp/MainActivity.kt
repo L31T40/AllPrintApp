@@ -16,18 +16,20 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.allprintapp.Login.PreferenceHelper
+import com.example.allprintapp.ui.listaprodutos.DetalhesProdutoFragment
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment
 import com.example.allprintapp.ui.listaprodutos.ProdutosRecyclerAdapter
 import com.example.allprintapp.ui.slideshow.SlideshowFragment
 import com.google.android.material.navigation.NavigationView
 import java.util.HashMap
 
-class MainActivity : AppCompatActivity(),ProdutosRecyclerAdapter.OnItemClickListener {
+class MainActivity : AppCompatActivity(),ProdutosRecyclerAdapter.OnItemClickListener, DetalhesProdutoFragment.OnItemClickListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mDrawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
     private var preferenceHelper: PreferenceHelper? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

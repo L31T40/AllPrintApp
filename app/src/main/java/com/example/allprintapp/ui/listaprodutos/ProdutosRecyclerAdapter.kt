@@ -10,16 +10,19 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.Constraints.TAG
-import androidx.fragment.app.*
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.allprintapp.MainActivity
 import com.example.allprintapp.R
+import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_DESCRICAO
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_ID
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_NAME
-import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_URL
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_PRICE
-import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_DESCRICAO
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_STOCK
+import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_URL
 import com.squareup.picasso.Picasso
 
 
@@ -58,8 +61,7 @@ class ProdutosRecyclerAdapter(private val mContext: Context,
         holder.mTextViewName.text = nome
         holder.mTextViewPrice.text = preco
         //holder.mTextViewCategory.text = category
-        Log.i(TAG, "+==========================Nome $nome")
-        Log.i(TAG, "+==========================id $id")
+        Log.i(TAG, "+========================== PRODUTO-> PDMF_$id NOME-> $nome  PREÇO-> $preco URL-> $imageUrl")
         Picasso.get().load(imageUrl).fit().centerInside().into(holder.mImageView)
 
     }
@@ -98,10 +100,6 @@ class ProdutosRecyclerAdapter(private val mContext: Context,
     }
 
 
-    private fun cenas(){
-
-
-    }
 
     private fun onItemClick(position: Int) {
         var firstName = "banana"
@@ -110,17 +108,8 @@ class ProdutosRecyclerAdapter(private val mContext: Context,
 //
         val clickedItem = mProdutosListagemModel!![position]
 
+        val dialogFragment : DialogFragment  = DetalhesProdutoFragment()
 
-/*        val fm :FragmentManager =  (mContext as MainActivity).supportFragmentManager
-        val fragmentTransaction: FragmentTransaction
-        val fragment = DetalhesProdutoFragment()
-        fragmentTransaction = fm.beginTransaction()
-        fragmentTransaction.replace(R.id.frame_layout_detalhes_produto, fragment)
-            .addToBackStack(null)
-        fragmentTransaction.commit()*/
-
-
-        val fragment: Fragment = DetalhesProdutoFragment()
         val bundle = Bundle()
         bundle.putString(EXTRA_URL, clickedItem.imageUrl)
         bundle.putString(EXTRA_ID, clickedItem.id)
@@ -128,24 +117,29 @@ class ProdutosRecyclerAdapter(private val mContext: Context,
         bundle.putString(EXTRA_PRICE, clickedItem.preco)
         bundle.putString(EXTRA_DESCRICAO, clickedItem.descricaocurta)
         bundle.putString(EXTRA_STOCK, clickedItem.stockqt)
-        fragment.arguments = bundle
-        val fm: FragmentManager = (mContext as MainActivity).supportFragmentManager
-        val ft: FragmentTransaction = fm.beginTransaction()
-        ft.add(R.id.nav_host_fragment, fragment)
+        bundle.putBoolean("notAlertDialog", true)
+        dialogFragment.arguments = bundle
+
+/*        val fm = (mContext as FragmentActivity).supportFragmentManager
+        val ft: FragmentTransaction
+        ft = fm.beginTransaction()
+        ft.replace(R.id.nav_host_fragment, dialogFragment)
             .addToBackStack(null)
-        ft.commit()
+        //ft.commit()
+        dialogFragment.show(ft,"Dialog")*/
+        val fm = (mContext as FragmentActivity).supportFragmentManager
+        dialogFragment.arguments = bundle
+        val ft: FragmentTransaction
+        ft = fm.beginTransaction()
+        val prev = (mContext as FragmentActivity).supportFragmentManager.findFragmentByTag("dialog")
+        if (prev != null)
+        {
+            ft.remove(prev)
+        }
+        ft.addToBackStack(null)
+        dialogFragment.show(ft, "dialog")
 
 
-//        val viewFragment : Fragment = DetalhesProdutoFragment()
-//        val bundle = Bundle()
-//        bundle.putString(EXTRA_URL, clickedItem.imageUrl)
-//        bundle.putString(EXTRA_ID, clickedItem.id)
-//        bundle.putString(EXTRA_NAME, clickedItem.nome)
-//        viewFragment.arguments = bundle
-//        val fragmentManager = null
-//        val transaction =  fragmentManager.beginTransaction()
-//        transaction.replace(R.id.detalhes_cardview, viewFragment)
-//        transaction.commit()
     }
 
 

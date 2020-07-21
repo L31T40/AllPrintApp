@@ -41,12 +41,18 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_gravity="bottom"
+            android:gravity="bottom"
             app:backgroundTint="@color/colorYellowDark"
             app:fabAlignmentMode="center"
             app:fabCradleRoundedCornerRadius="120dp"
             app:hideOnScroll="true"
+            app:layout_anchorGravity="bottom"
+            app:layout_dodgeInsetEdges="bottom"
+            app:layout_insetEdge="top"
             app:navigationIcon="@android:drawable/sym_action_chat"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

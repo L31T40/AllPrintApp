@@ -1,6 +1,10 @@
 package com.example.allprintapp
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.annotation.TargetApi
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -15,7 +19,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 
@@ -25,6 +28,8 @@ class LoginActivity : AppCompatActivity() {
     private var btnlogin: Button? = null
    // private var tvreg: TextView? = null
     private var preferenceHelper: PreferenceHelper? = null
+    private var mProgressView: View? = null
+    private var mLoginFormView: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +39,8 @@ class LoginActivity : AppCompatActivity() {
         etPass = findViewById<View>(R.id.etpassword) as EditText
         btnlogin = findViewById<View>(R.id.btn_entrar) as Button
         btnlogin!!.setOnClickListener { loginUser() }
+        mProgressView = findViewById(R.id.progressbar_login)
+        mLoginFormView = findViewById(R.id.login_form)
     }
 
 
@@ -51,7 +58,7 @@ class LoginActivity : AppCompatActivity() {
         val api = retrofit.create(LoginInterface::class.java)
 
         val call = api.getUserLogin(email, password)
-
+        showProgress(true)
         if (call != null) {
             call.enqueue(object : Callback<String?>{
                 //  call!!.enqueue(object : Callback<String?> {
@@ -60,10 +67,13 @@ class LoginActivity : AppCompatActivity() {
                     //Toast.makeText()
                     if (response.isSuccessful) {
                         if (response.body() != null) {
+
                             Log.i("onSuccess", response.body().toString())
                             val jsonresponse = response.body().toString()
                             parseLoginData(jsonresponse)
-                            Toast.makeText(this@LoginActivity, "ENTROU"+response.body().toString(), Toast.LENGTH_LONG).show()
+                            //Toast.makeText(this@LoginActivity, "ENTROU"+response.body().toString(), Toast.LENGTH_LONG).show()
+
+                            // lança o spinner de progresso e ao mesmo tempo a asynctask de login
 
                         } else {
                             Log.i("onEmptyResponse", "Não Devolveu resposta") //Toast.makeText(getContext(),"Nothing returned",Toast.LENGTH_LONG).show();
@@ -109,5 +119,35 @@ class LoginActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
+
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private fun showProgress(show: Boolean) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        val shortAnimTime =
+            resources.getInteger(android.R.integer.config_mediumAnimTime)
+        mLoginFormView?.visibility = if (show) View.GONE else View.VISIBLE
+        mLoginFormView?.animate()?.setDuration(shortAnimTime.toLong())?.alpha(
+            if (show) 0F else 5.toFloat()
+        )?.setListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                mLoginFormView?.visibility = if (show) View.GONE else View.VISIBLE
+            }
+        })
+        mProgressView!!.visibility = if (show) View.VISIBLE else View.GONE
+        mProgressView!!.animate().setDuration(shortAnimTime.toLong()).alpha(
+            if (show) 5F else 0.toFloat()
+        ).setListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                mProgressView!!.visibility = if (show) View.VISIBLE else View.GONE
+            }
+        })
+    }
+
 }
 

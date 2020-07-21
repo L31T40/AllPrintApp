@@ -1,6 +1,7 @@
 package com.example.allprintapp.ui.listaprodutos
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.Context
 import android.os.Bundle
@@ -11,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.AuthFailureError
@@ -29,12 +29,16 @@ import java.util.*
 /**
  * A fragment representing a list of Items.
  */
-class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClickListener {
+
+@Suppress("DEPRECATION")
+
+open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClickListener {
 
 
     private var columnCount = 1
     var ma: Activity? = null
 
+    private var pDialog: ProgressDialog? = null
 
     var mRecyclerView: RecyclerView? = null
     //    private var mExampleAdapter: ExampleAdapter? = null
@@ -49,13 +53,21 @@ class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClick
 
     lateinit var mContext: AppCompatActivity
 
+
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         this.mContext = context as AppCompatActivity
+
+        pDialog = ProgressDialog(mContext)
+        pDialog!!.setMessage("Aguarde...")
+        pDialog!!.setCancelable(false)
+        pDialog!!.show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
         arguments?.let {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
@@ -83,11 +95,14 @@ class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClick
         /**Parse a json pedido ao middleware*/
         getDataProdutos()
 
+
     }
 
 
 
     private fun loadRecyclerView() {
+        // Dismiss the progress dialog
+        if (pDialog!!.isShowing) pDialog!!.dismiss()
         mRecyclerView = view?.findViewById(R.id.recycler_view_lista_produtos)
         mProdutosAdapter = activity?.let { ProdutosRecyclerAdapter(it, mModelProdutoListagems!!) }
         mRecyclerView!!.setHasFixedSize(true)
@@ -98,20 +113,20 @@ class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClick
     }
 
 
+
     fun getDataProdutos() {
         val token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiN2ViYTk4YmI3YTk4OWI2NjI1YThkZjAyOTA3MWMxZTI3NzZkY2UzNmRlZmM1ZGE5Nzk0MjliMTNhNGUzN2RjODFiODkwOGNlYzNjY2M5YjgiLCJpYXQiOjE1OTM2Mzc4ODYsIm5iZiI6MTU5MzYzNzg4NiwiZXhwIjoxNjI1MTczODg2LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.F5RId5LSLp19uFpxXrpU2KG1dvvE9so9NFc_HTrPCsUrg-ObcHh4tJ1RRtURcMx4qmoZ0z4tk9bfGGB9TM2DjsT2tfDDokqiGdTYdboHmqkSlGKTMFZ897CFtYBlK_ETn4Cj4HoE3bG0djTHftuutXvZYzMhuWXGILkY3dfSQP2PQRwDY2CHBwAtc9CMveIdyAYE9liYF9MyjK4-pnLJvNiI5fxQvpfWBjague_-ffmFsmvqO4UjUfpZVKkLK-RjWdHtYl2EyXOejT6O4pJMANahVXJPPC97fKzKfU9pOMIVK1mMnv6TKpvz9smq7Hdg2XUjuRJ6FEHOBp3-qtX_FIGYSzQAhBlD4ITpi8jAFN4BMV-rxTs9kaxSLu_TT7OIw9JWfm40z9foBvgeDrlOYmTG1q4GI5BwteQ_31TngFkY8vDzeDxr8HBpFEogw1aAvHBJifARzR7t48FG3J9EENNGDG1LddvRgMB3a-55TQJlho6MGXodT3LRGLXoikySHjPcDEl9PbncUnkKvPh97IcdCg1OkwTnbZkgj4zyAdafjhW7vtwS9D-FIdN0g8vJHS7pSvFThtLfqCHwUuCS-Bz6cx-r1mUuUEidmz3w94clBE9EG2ZvToLmqDLy93hOM6raU6NdIlCVhnQ-fjMogknvtA7qEm5cdC8I3pQlCGw"
         val url= "https://middleware.allprint.pt/api/produtos/1"
-//        progressDialog = ProgressDialog(this)
-//        progressDialog.setMessage(getString(R.string.loading))
-//        progressDialog.setCancelable(false)
-//        progressDialog.show()
+/*        val progressDialog = ProgressDialog(context)
+        progressDialog.setMessage(getString(R.string.loading))
+        progressDialog.setCancelable(false)
+        progressDialog.show()*/
 
-        Log.i(ContentValues.TAG, "+==========================Nome $url")
+
+        Log.i(ContentValues.TAG, "+========================== URL $url")
         val stringRequest: StringRequest = object : StringRequest(Method.POST,url, Response.Listener { response ->
             try {
                 val jsonArray =  JSONArray(response)
-                val tamanho = jsonArray.length()
-                Log.i(ContentValues.TAG, "+==========================tamanho $tamanho")
                 for (i in 0 until jsonArray.length()) {
                     val hit = jsonArray.getJSONObject(i)
                     val id = Utils.cortaString(hit.getString("id"),"_")
@@ -120,7 +135,7 @@ class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClick
                     val descricaocurta = hit.getString("short_description")
                     val stockqt = hit.getString("stock_quantity")
                     val imageUrl = hit.getString("image")
-                    Log.i(ContentValues.TAG, "+==========================Nome $mModelProdutoListagems")
+                    //Log.i(ContentValues.TAG, "+==========================Nome $mModelProdutoListagems")
                     mModelProdutoListagems!!.add(ListagemProdutosModel(id, nome, preco, descricaocurta, stockqt,  imageUrl))
                 }
 
@@ -131,7 +146,7 @@ class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClick
             }
             //Toast.makeText(context, response, Toast.LENGTH_LONG).show()
         }, Response.ErrorListener { volleyerror ->
-            //progressDialog.dismiss()
+            /*progressDialog.dismiss()*/
             //Toast.makeText(context, volleyerror.message, Toast.LENGTH_LONG).show()
         }) {
             @Throws(AuthFailureError::class)
@@ -145,6 +160,7 @@ class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClick
             }
         }
         mRequestQueue!!.add(stringRequest)
+    /*    progressDialog.dismiss()*/
     }
 
 
