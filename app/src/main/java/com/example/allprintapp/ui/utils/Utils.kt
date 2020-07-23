@@ -196,7 +196,6 @@ class Utils(var ma: Activity) {
 
 
 
-
         fun formatoHora(hour: Int): Int {
             var hour = hour
             val format: String

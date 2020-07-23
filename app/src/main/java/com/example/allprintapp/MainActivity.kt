@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(),ProdutosRecyclerAdapter.OnItemClickList
         // menu should be considered as top level destinations.
 
         appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.nav_home, R.id.nav_loja, R.id.nav_slideshow, R.id.nav_logout), drawerLayout)
+                R.id.nav_home, R.id.nav_categorias, R.id.nav_loja, R.id.nav_slideshow, R.id.nav_logout), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 

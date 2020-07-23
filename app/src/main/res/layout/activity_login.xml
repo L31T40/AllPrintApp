@@ -52,7 +52,7 @@
             android:paddingRight="20dp"
             android:paddingBottom="15dp"
             android:textColor="#F44336"
-            android:textColorHint="#FFC107" />
+            android:textColorHint="#FFB300" />
 
         <EditText
             android:id="@+id/etpassword"
@@ -66,14 +66,15 @@
             android:paddingRight="20dp"
             android:paddingBottom="15dp"
             android:textColor="#F44336"
-            android:textColorHint="#FFC107" />
+            android:textColorHint="#FFB300" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:gravity="center"
-            android:text="Esqueceu a password?" />
+            android:text="Esqueceu a password?"
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/btn_entrar"

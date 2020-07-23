@@ -2,6 +2,7 @@ package com.example.allprintapp.ui.listaprodutos
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.app.ProgressDialog.STYLE_SPINNER
 import android.content.ContentValues
 import android.content.Context
 import android.os.Bundle
@@ -59,9 +60,9 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
         super.onAttach(context)
         this.mContext = context as AppCompatActivity
 
-        pDialog = ProgressDialog(mContext)
-        pDialog!!.setMessage("Aguarde...")
-        pDialog!!.setCancelable(false)
+        pDialog = ProgressDialog(mContext,STYLE_SPINNER)
+        pDialog!!.setMessage("Aguarde... a carregar produtos")
+        pDialog!!.setCancelable(true)
         pDialog!!.show()
     }
 

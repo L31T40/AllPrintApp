@@ -10,6 +10,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_loja">Loja</string>
     <string name="menu_slideshow">Cenas</string>
+    <string name="menu_categorias">Categorias</string>
     <string name="loading">A carregar Cenas</string>
 
     <string name="home_second">Home Second</string>

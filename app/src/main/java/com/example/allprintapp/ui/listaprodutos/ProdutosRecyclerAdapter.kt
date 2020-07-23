@@ -102,9 +102,9 @@ class ProdutosRecyclerAdapter(private val mContext: Context,
 
 
     private fun onItemClick(position: Int) {
-        var firstName = "banana"
+/*        var firstName = "banana"
         var lastName = "banana"
-        Toast.makeText(mContext, firstName, Toast.LENGTH_SHORT).show()
+        Toast.makeText(mContext, firstName, Toast.LENGTH_SHORT).show()*/
 //
         val clickedItem = mProdutosListagemModel!![position]
 
@@ -120,18 +120,12 @@ class ProdutosRecyclerAdapter(private val mContext: Context,
         bundle.putBoolean("notAlertDialog", true)
         dialogFragment.arguments = bundle
 
-/*        val fm = (mContext as FragmentActivity).supportFragmentManager
-        val ft: FragmentTransaction
-        ft = fm.beginTransaction()
-        ft.replace(R.id.nav_host_fragment, dialogFragment)
-            .addToBackStack(null)
-        //ft.commit()
-        dialogFragment.show(ft,"Dialog")*/
+
         val fm = (mContext as FragmentActivity).supportFragmentManager
         dialogFragment.arguments = bundle
         val ft: FragmentTransaction
         ft = fm.beginTransaction()
-        val prev = (mContext as FragmentActivity).supportFragmentManager.findFragmentByTag("dialog")
+        val prev = mContext.supportFragmentManager.findFragmentByTag("dialog")
         if (prev != null)
         {
             ft.remove(prev)
