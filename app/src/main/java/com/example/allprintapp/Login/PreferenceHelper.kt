@@ -15,7 +15,7 @@ class PreferenceHelper(context: Context) {
     fun putIsLogin(loginorout: Boolean) {
         val edit = app_prefs.edit()
         edit.putBoolean(EMAIL, loginorout)
-        edit.commit()
+        edit.apply()
     }
 
     val isLogin: Boolean
@@ -24,7 +24,7 @@ class PreferenceHelper(context: Context) {
     fun putName(loginorout: String?) {
         val edit = app_prefs.edit()
         edit.putString(NAME, loginorout)
-        edit.commit()
+        edit.apply()
     }
 
     val name: String?
@@ -33,7 +33,7 @@ class PreferenceHelper(context: Context) {
     fun putHobby(loginorout: String?) {
         val edit = app_prefs.edit()
         edit.putString(HOBBY, loginorout)
-        edit.commit()
+        edit.apply()
     }
 
     val hobby: String?
