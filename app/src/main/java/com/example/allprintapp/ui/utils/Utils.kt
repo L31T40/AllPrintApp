@@ -213,6 +213,12 @@ class Utils(var ma: Activity) {
             return hour
         }
 
+        fun cortaStringAfter(str:String, token:String):String {
+            //val str1 = str.substring(str.indexOf(token) + 1)
+            //str1.trim { it <= ' ' }
+            return str.substringBefore(token)+"_"
+        }
+
         fun cortaString(str:String, token:String):String {
             val str1 = str.substring(str.indexOf(token) + 1)
             str1.trim { it <= ' ' }

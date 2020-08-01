@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    tools:context=".ui.filtrosprodutos.FiltroProdutosFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/dialog_rounded_bg"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp">
+
+            <LinearLayout
+                android:layout_width="182dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FILTRAR PRODUTOS"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="right|center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LIMPAR"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="#FB8C00" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="131dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:text="Distrito"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="#4E4C4C"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="135dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="112dp"
+                    android:layout_height="wrap_content"
+                    android:text="Concelho"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="#4E4C4C"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <Spinner
+                    android:id="@+id/spinner2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="135dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="112dp"
+                    android:layout_height="wrap_content"
+                    android:text="Categoria"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="#4E4C4C"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <Spinner
+                    android:id="@+id/spinner3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="135dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="112dp"
+                    android:layout_height="wrap_content"
+                    android:text="Etiqueta"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="#4E4C4C"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <Spinner
+                    android:id="@+id/spinner4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_filtro"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:clipChildren="false">
+
+            </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="104dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_Filtro"
+                android:layout_width="227dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/custom_login_btn"
+                android:drawableEnd="@drawable/ic_seta2"
+                android:padding="5dp"
+                android:text="APLICAR FILTRO"
+                android:textColor="@color/colorWhiteBG"
+                android:textSize="18dp" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

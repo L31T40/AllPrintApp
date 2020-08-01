@@ -21,12 +21,14 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.allprintapp.R
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_DESCRICAO
+import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_DESCRICAOCURTA
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_ID
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_NAME
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_PRICE
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_STOCK
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_URL
 import com.example.allprintapp.ui.utils.ListagemDistritosModel
+import com.example.allprintapp.ui.utils.Utils.Companion.cortaString
 import com.example.loadmoreexample.Constant
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.progress_loading.view.*
@@ -109,7 +111,7 @@ class ProdutosRecyclerAdapter(private val mContext: Context,
             val currentItem = mProdutosListagemModel[position]
             //val currentPlace = mListagemDistritos[position]
 
-            val id = currentItem.id
+            val id = cortaString(currentItem.id,"_")
             val nome = currentItem.nome
             val preco = currentItem.preco
             //val category = currentItem.category
@@ -140,6 +142,7 @@ class ProdutosRecyclerAdapter(private val mContext: Context,
     }
 
     inner class ProdutosViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
 
         var mImageView: ImageView
         var mTextViewID: TextView
@@ -182,7 +185,8 @@ class ProdutosRecyclerAdapter(private val mContext: Context,
         bundle.putString(EXTRA_ID, clickedItem.id)
         bundle.putString(EXTRA_NAME, clickedItem.nome)
         bundle.putString(EXTRA_PRICE, clickedItem.preco)
-        bundle.putString(EXTRA_DESCRICAO, clickedItem.descricaocurta)
+        bundle.putString(EXTRA_DESCRICAO, clickedItem.descricao)
+        bundle.putString(EXTRA_DESCRICAOCURTA, clickedItem.descricaocurta)
         bundle.putString(EXTRA_STOCK, clickedItem.stockqt)
         bundle.putBoolean("notAlertDialog", true)
         dialogFragment.arguments = bundle

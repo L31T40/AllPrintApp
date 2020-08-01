@@ -5,7 +5,7 @@
     android:id="@+id/ConstraintLayoutLogin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_gradient_black_orange"
+    android:background="@drawable/bg_gradient_orange_black"
     android:orientation="vertical"
     android:paddingLeft="50dp"
     android:paddingRight="50dp"

@@ -4,21 +4,21 @@ package com.example.allprintapp.ui.listaprodutos
 
 
 
-import android.app.Activity
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.DialogInterface
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import com.example.allprintapp.MainActivity
 import com.example.allprintapp.R
+import com.example.allprintapp.ui.utils.Utils.Companion.cortaString
 import com.squareup.picasso.Picasso
 
 
@@ -36,57 +36,13 @@ class DetalhesProdutoFragment : DialogFragment(){//,View.OnClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-/*
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }*/
+
+
 interface OnItemClickListener {
     fun onItemClick(position: Int)
 }
-//
-//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-//
-////        if (arguments != null)
-////        {
-////            if (arguments?.getBoolean("notAlertDialog")!!)
-////            {
-////                return super.onCreateDialog(savedInstanceState)
-////            }
-////        }
-//
-//
-////
-////        val builder = AlertDialog.Builder(activity)
-////        builder.setPositiveButton("SAIR", object: DialogInterface.OnClickListener {
-////            override fun onClick(dialog:DialogInterface, which:Int) {
-////                dismiss()
-////            }
-////        })
-////
-////        val style = STYLE_NORMAL
-////       // val theme = android.R.style.Theme_Black_NoTitleBar_Fullscreen
-////        val theme = R.style.AppTheme_PopupOverlay
-////        setStyle(style, theme)
-//
-//
-//
-//
-////        return builder.create()
-//
-////        val dialog = super.onCreateDialog(savedInstanceState)
-////        val style = STYLE_NO_FRAME
-////        val theme = R.style.AppTheme_PopupOverlay
-////        setStyle(style, theme)
-////        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.CYAN))
-//        return null
-//    }
 
-
-    // @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -95,26 +51,61 @@ interface OnItemClickListener {
 
         val view = inflater.inflate(R.layout.fragment_detalhes_produto, container, false)
 
+        if (dialog != null && dialog?.window != null) {
+            dialog?.window?.setBackgroundDrawable( ColorDrawable(Color.TRANSPARENT))
+            dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        }
+
         this.dialog?.setTitle("BANAAN")
 
-        val textViewName: TextView = view.findViewById(R.id.textViewDistritoDetalhes) as TextView
-        textViewName.text = arguments?.getString(EXTRA_NAME)
+        val mLocais = MainActivity.ListagemDistritos
+        var mDistrito: String? = null
+        var mConcelho: String? = null
+
+
+
+        val index = mLocais.indexOfFirst { it.prefixo == "1AV3AN_" } // -1 if not found
+        if (index >= 0) {
+            val user = mLocais[index]
+
+            mDistrito = user.distrito
+            mConcelho = user.concelho
+
+            // do something with user
+        }
 
         val textViewId: TextView = view.findViewById(R.id.textViewRefDetalhes) as TextView
-        val textId = "REF:  PDMF_" + arguments?.getString(EXTRA_ID)
-        textViewId.text = textId
+        val textId = arguments?.getString(EXTRA_ID)
+        textViewId.text =  cortaString(textId.toString(),"_")
 
-        val textViewStock: TextView = view.findViewById(R.id.textViewRefDetalhes) as TextView
-        val textStock = "Stock: " + arguments?.getString(EXTRA_STOCK)
-        textViewStock.text = textStock
+        val textViewDistrito: TextView = view.findViewById(R.id.textViewDistritoDetalhes) as TextView
+        textViewDistrito.text = "Distrito: "+mDistrito.toString()
+        //textViewName.text = arguments?.getString(EXTRA_NAME)
+
+        val textViewConcelho: TextView = view.findViewById(R.id.textViewConcelhoDetalhes) as TextView
+        textViewConcelho.text = "Concelho: "+mConcelho.toString()
+        //textViewName.text = arguments?.getString(EXTRA_NAME)
+
+        val textViewDescricaoCurta: TextView = view.findViewById(R.id.textViewDescricaoCurtaDetalhes) as TextView
+        val textDescricaoCurta = arguments?.getString(EXTRA_DESCRICAOCURTA)
+        textViewDescricaoCurta.text = android.text.Html.fromHtml(textDescricaoCurta).toString() //remove tags htmls da string
+
+
 
         val textViewDescricao: TextView = view.findViewById(R.id.textViewDescricaoDetalhes) as TextView
         val textDescricao = arguments?.getString(EXTRA_DESCRICAO)
-        textViewDescricao.text = textDescricao
+        textViewDescricao.text = android.text.Html.fromHtml(textDescricao).toString() //remove tags htmls da string
+
 
         val textViewPrice: TextView = view.findViewById(R.id.textViewPrecoDetalhes) as TextView
-        val textPrice = "Preço: " + arguments?.getString(EXTRA_PRICE)
+        val textPrice = "Preço: " + arguments?.getString(EXTRA_PRICE)+"€"
         textViewPrice.text = textPrice
+
+        val textViewStock: TextView = view.findViewById(R.id.textViewStockDetalhes) as TextView
+        val textStock = "Stock: " + arguments?.getString(EXTRA_STOCK)
+        textViewStock.text = textStock
+
+
 
         val imageUrl = arguments?.getString(EXTRA_URL)
         val imageView = view.findViewById<ImageView>(R.id.imageViewProdutoDetalhes)
@@ -132,7 +123,8 @@ interface OnItemClickListener {
         const val EXTRA_ID = "id"
         const val EXTRA_NAME = "name"
         const val EXTRA_PRICE = "price"
-        const val EXTRA_DESCRICAO = "short_description"
+        const val EXTRA_DESCRICAO = "description"
+        const val EXTRA_DESCRICAOCURTA = "short_description"
         const val EXTRA_STOCK = "stock_quantity"
 
         fun newInstance(param1: String, param2: String) =

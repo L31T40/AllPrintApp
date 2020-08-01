@@ -3,7 +3,6 @@ package com.example.allprintapp
 import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -14,21 +13,19 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.android.volley.AuthFailureError
-import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.allprintapp.Login.PreferenceHelper
+import com.example.allprintapp.ui.filtrosprodutos.FiltroProdutosFragment
 import com.example.allprintapp.ui.listaprodutos.DetalhesProdutoFragment
 import com.example.allprintapp.ui.listaprodutos.ProdutosRecyclerAdapter
 import com.example.allprintapp.ui.utils.ListagemDistritosModel
-import com.example.allprintapp.ui.utils.VarGlobals
 import com.google.android.material.navigation.NavigationView
 import org.json.JSONArray
 import org.json.JSONException
 import java.util.*
 
-class MainActivity : AppCompatActivity(),ProdutosRecyclerAdapter.OnItemClickListener, DetalhesProdutoFragment.OnItemClickListener {
+class MainActivity : AppCompatActivity(),ProdutosRecyclerAdapter.OnItemClickListener, DetalhesProdutoFragment.OnItemClickListener, FiltroProdutosFragment.OnItemClickListener{
 /** listagem de distritos disponoveis na aplicaçao*/
     companion object {
         var ListagemDistritos = ArrayList<ListagemDistritosModel>()
@@ -73,11 +70,14 @@ class MainActivity : AppCompatActivity(),ProdutosRecyclerAdapter.OnItemClickList
 //        g.listagemDistritos = mListagemDistritos
     }
 
+    //Criar menu definiçoes top
+/*
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
+*/
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity(),ProdutosRecyclerAdapter.OnItemClickList
             }
             /**adicionar listagem de distrito ao companion object*/
             ListagemDistritos= mListagemDistritos!!
-            Toast.makeText(applicationContext, response, Toast.LENGTH_LONG).show()
+            //Toast.makeText(applicationContext, response, Toast.LENGTH_LONG).show()
         }, Response.ErrorListener { volleyerror ->
             Toast.makeText(applicationContext, volleyerror.message, Toast.LENGTH_LONG).show()
         }) {
