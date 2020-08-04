@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.AuthFailureError
+import com.android.volley.DefaultRetryPolicy
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -25,7 +26,8 @@ import com.android.volley.toolbox.Volley
 import com.example.allprintapp.MainActivity
 import com.example.allprintapp.R
 import com.example.allprintapp.ui.filtrosprodutos.FiltroProdutosFragment
-import com.example.allprintapp.ui.utils.ListagemDistritosModel
+import com.example.allprintapp.models.ListagemDistritosModel
+import com.example.allprintapp.models.ListagemProdutosModel
 import kotlinx.android.synthetic.main.fragment_listagem_produtos_recyclerview.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -284,6 +286,11 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
                     return headers
                 }
             }
+        stringRequest.retryPolicy = DefaultRetryPolicy(
+            DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
         mRequestQueue!!.add(stringRequest)
 
     }

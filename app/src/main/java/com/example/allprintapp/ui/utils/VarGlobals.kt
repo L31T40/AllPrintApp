@@ -1,6 +1,7 @@
 package com.example.allprintapp.ui.utils
 
 import android.app.Application
+import com.example.allprintapp.models.ListagemDistritosModel
 import java.util.*
 
 class VarGlobals : Application() {

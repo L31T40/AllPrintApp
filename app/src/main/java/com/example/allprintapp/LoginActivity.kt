@@ -92,7 +92,7 @@ class LoginActivity : AppCompatActivity() {
             val jsonObject = JSONObject(response)
             if (jsonObject.has("success")) {//if (jsonObject.getString("status") == "true") {
                 saveInfo(response)
-                Toast.makeText(this@LoginActivity,"lOGIN BEM SUCEDIDO", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@LoginActivity,"LOGIN SUCESSO", Toast.LENGTH_LONG).show()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)

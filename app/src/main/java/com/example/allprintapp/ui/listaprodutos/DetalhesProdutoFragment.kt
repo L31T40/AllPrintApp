@@ -64,14 +64,13 @@ interface OnItemClickListener {
 
 
 
+
         val index = mLocais.indexOfFirst { it.prefixo == "1AV3AN_" } // -1 if not found
         if (index >= 0) {
-            val user = mLocais[index]
+            val locais = mLocais[index]
+            mDistrito = locais.distrito
+            mConcelho = locais.concelho
 
-            mDistrito = user.distrito
-            mConcelho = user.concelho
-
-            // do something with user
         }
 
         val textViewId: TextView = view.findViewById(R.id.textViewRefDetalhes) as TextView

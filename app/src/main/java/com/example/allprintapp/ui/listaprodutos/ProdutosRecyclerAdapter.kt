@@ -27,7 +27,8 @@ import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Compani
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_PRICE
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_STOCK
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_URL
-import com.example.allprintapp.ui.utils.ListagemDistritosModel
+import com.example.allprintapp.models.ListagemDistritosModel
+import com.example.allprintapp.models.ListagemProdutosModel
 import com.example.allprintapp.ui.utils.Utils.Companion.cortaString
 import com.example.loadmoreexample.Constant
 import com.squareup.picasso.Picasso
