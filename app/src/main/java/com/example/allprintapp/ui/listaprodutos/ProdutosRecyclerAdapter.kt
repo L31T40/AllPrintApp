@@ -17,6 +17,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.Constraints.TAG
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.allprintapp.R
@@ -48,7 +49,10 @@ class ProdutosRecyclerAdapter(private val mContext: Context,
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
+        fun recreate()
+
     }
+
 
     fun addData(dataViews: ArrayList<ListagemProdutosModel>) {
         this.mProdutosListagemModel.addAll(dataViews)

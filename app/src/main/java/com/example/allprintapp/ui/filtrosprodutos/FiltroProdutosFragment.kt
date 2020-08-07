@@ -9,22 +9,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.constraintlayout.widget.Constraints.TAG
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.core.view.size
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentTransaction
 import androidx.transition.TransitionManager
 import com.example.allprintapp.MainActivity
+import com.example.allprintapp.MainActivity.Companion.ListagemCategoriasCompleta
+import com.example.allprintapp.MainActivity.Companion.ListagemEtiquetasCompleta
 import com.example.allprintapp.R
+import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment
+import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.flag_pesquisa
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.fragment_filtro_produtos.*
-
 import kotlin.random.Random
 
 
@@ -41,18 +43,25 @@ private val listaDistritos: ArrayList<String> = ArrayList() // Array para coloca
 private val listaConcelhos: ArrayList<String> = ArrayList() // Array para colocar nomes de Concelhos conforme o distrito seleccionado
 private val listaCategorias: ArrayList<String> = ArrayList() // Array para colocar nomes de Concelhos conforme o distrito seleccionado
 private val listaEtiquetas: ArrayList<String> = ArrayList() // Array para colocar nomes de Concelhos conforme o distrito seleccionado
+private val filtraDistritoId : ArrayList<String> = ArrayList() // Array para colocar nomes de Concelhos conforme o distrito seleccionado
+private val filtraEtiquetaId : ArrayList<String> = ArrayList() // Array para colocar nomes de Concelhos conforme o distrito seleccionado
+private var filtraCategoriaId : String? = null // Array para colocar nomes de Concelhos conforme o distrito seleccionado
 
 private val mLocais = MainActivity.ListagemDistritos //Array de distrito e concelhos
 private val mCategoria = MainActivity.ListagemCategorias //Array de categorias
 private val mEtiqueta = MainActivity.ListagemEtiquetas//Array de etiquetas
 private var mDistrito: String? = null
 private var mConcelho: String? = null
-private var selectedDistrito: String? = null
-private var selectedConcelho: String? = null
-private var selectedCategoria: String? = null
-private var selectedEtiqueta: String? = null
-private var selectedChips: List<String>? = null
-
+//private var selectedDistrito: String? = null
+//private var selectedConcelho: String? = null
+//private var selectedCategoria: String? = null
+//private var selectedEtiqueta: String? = null
+//private var selectedChips: List<String>? = null
+private var spinnerDistritos: Spinner? = null
+private var spinnerConcelhos: Spinner? = null
+private var spinnerCategoria: Spinner? = null
+private var spinnerEtiqueta: Spinner? = null
+private var btnFiltrar: Button? = null
 
 
 /**
@@ -60,15 +69,43 @@ private var selectedChips: List<String>? = null
  * Use the [FiltroProdutosFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class FiltroProdutosFragment :  DialogFragment(), AdapterView.OnItemSelectedListener {
+class FiltroProdutosFragment  :  DialogFragment(), AdapterView.OnItemSelectedListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
-    private var spinnerDistritos: Spinner? = null
-    private var spinnerConcelhos: Spinner? = null
-    private var spinnerCategoria: Spinner? = null
-    private var spinnerEtiqueta: Spinner? = null
+
+    companion object {
+
+        var selectedDistrito: String? = null
+        var selectedConcelho: String? = null
+        var selectedCategoria: String? = null
+        var selectedEtiqueta: String? = null
+        var selectedChips: List<String>? = null
+        var stringPesquisa: String? = null
+
+
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment using the provided parameters.
+         *
+         * @param param1 Parameter 1.
+         * @param param2 Parameter 2.
+         * @return A new instance of fragment FlitrosProdutosFragment.
+         */
+        // TODO: Rename and change types and number of parameters
+        @JvmStatic
+        fun newInstance(param1: String, param2: String) =
+            FiltroProdutosFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_PARAM1, param1)
+                    putString(ARG_PARAM2, param2)
+                }
+            }
+    }
+
+
+
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
@@ -98,6 +135,8 @@ class FiltroProdutosFragment :  DialogFragment(), AdapterView.OnItemSelectedList
         spinnerConcelhos=view.findViewById<Spinner>(R.id.spinner_concelho) as Spinner
         spinnerCategoria=view.findViewById<Spinner>(R.id.spinner_categorias) as Spinner
         spinnerEtiqueta=view.findViewById<Spinner>(R.id.spinner_etiquetas) as Spinner
+        btnFiltrar = view.findViewById<View>(R.id.button_Filtro) as Button
+        btnFiltrar!!.setOnClickListener { filtrarPesquisaProdutos() }
 
         spinnerDistritos!!.onItemSelectedListener=this
 
@@ -122,25 +161,7 @@ class FiltroProdutosFragment :  DialogFragment(), AdapterView.OnItemSelectedList
         Toast.makeText(context, message, toastLength).show()
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FlitrosProdutosFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FiltroProdutosFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
+
 
 
     fun chipsEtiquetas(view:View){
@@ -225,7 +246,7 @@ class FiltroProdutosFragment :  DialogFragment(), AdapterView.OnItemSelectedList
             .map { (it as Chip).text.toString() }
             .toList()
         Log.i(TAG, "+========================== CHIPPPPSSS -> ${selectedChips!!.get(0)}")
-        Log.i(TAG, "+========================== CHIPPPPSSS -> ${selectedChips!!.get(1)}")
+    //    Log.i(TAG, "+========================== CHIPPPPSSS -> ${selectedChips!!.get(1)}")
 
     }
 
@@ -235,9 +256,27 @@ class FiltroProdutosFragment :  DialogFragment(), AdapterView.OnItemSelectedList
         /**SPINNER DISTRITOS**/
 
 
+
+//        val existeDistrito= MainActivity.ListagemDistritos.find { it.distrito == etiqueta }
+//        val existeConcelho= MainActivity.ListagemDistritos.find { it.concelho == etiqueta }
+//        if (((MainActivity.ListagemEtiquetas.find { it.nome == etiqueta  }==null) && (MainActivity.ListagemCategorias.find { it.nome == etiqueta  }==null)) && (existeDistrito==null || existeConcelho==null )) {
+//            MainActivity.ListagemEtiquetas!!.add(
+//                ListaEtiquetasModel(
+//                    etiquetaId,
+//                    etiqueta
+//                )
+//            )
+
+
         //val index = mLocais.indexOfFirst { it.prefixo == "1AV3AN_" } // -1 if not found
+
+        //Coloca apenas os distritos com produtos no spinner
         mLocais.groupBy { it.distrito }.forEach { (name, list) ->
-            listaDistritos.add(name)
+            val existeDistrito= MainActivity.ListagemCategoriasCompleta.find { it.nome == name }
+            if(existeDistrito!=null){
+                listaDistritos.add(name)
+            }
+
         }
 
         // access the spinner
@@ -300,10 +339,31 @@ class FiltroProdutosFragment :  DialogFragment(), AdapterView.OnItemSelectedList
 //        }
         listaConcelhos.clear()
 
+        //Coloca apenas os distritos com produtos no spinner
+//        mLocais.groupBy { it.distrito }.forEach { (name, list) ->
+//            val existeDistrito= MainActivity.ListagemCategoriasCompleta.find { it.nome == name }
+//            if(existeDistrito!=null){
+//                listaDistritos.add(name)
+//            }
+//
+//        }
+
+//        mLocais.groupBy { it.distrito }.forEach { (name, list) ->
+//            val existeConcelho= MainActivity.ListagemCategoriasCompleta.find { it.nome == name }
+//            if(existeConcelho!=null){
+//                listaConcelhos.add(name)
+//            }
+//
+//        }
+
         for (i in 0 until mLocais.size) {
             if (mLocais[i].distrito == selectedDistrito) {
                 val mConcelho = mLocais[i].concelho
-                listaConcelhos.add(mConcelho)
+                val existeDistrito= MainActivity.ListagemCategoriasCompleta.find { it.nome == mConcelho }
+                if(existeDistrito!=null){
+                    listaConcelhos.add(mConcelho)
+                }
+
             }
         }
 
@@ -331,7 +391,8 @@ class FiltroProdutosFragment :  DialogFragment(), AdapterView.OnItemSelectedList
                         getString(R.string.selected_item) + " " +
                                 "" + listaConcelhos[position], Toast.LENGTH_SHORT
                     ).show()
-                    selectedConcelho = getString(R.string.selected_item)
+                    //selectedConcelho = getString(R.string.selected_item)
+                    selectedConcelho = listaConcelhos[position]
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
@@ -373,7 +434,8 @@ class FiltroProdutosFragment :  DialogFragment(), AdapterView.OnItemSelectedList
                         getString(R.string.selected_item) + " " +
                                 "" + mCategoria[position], Toast.LENGTH_SHORT
                     ).show()
-                    selectedCategoria = getString(R.string.selected_item)
+                    //selectedCategoria = getString(R.string.selected_item)
+                    selectedCategoria = listaCategorias[position]
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
@@ -409,11 +471,7 @@ class FiltroProdutosFragment :  DialogFragment(), AdapterView.OnItemSelectedList
                     parent: AdapterView<*>,
                     view: View, position: Int, id: Long
                 ) {
-                    Toast.makeText(
-                        context,
-                        getString(R.string.selected_item) + " " +
-                                "" + mEtiqueta[position], Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText( context, getString(R.string.selected_item) + " " +" " + mEtiqueta[position].nome, Toast.LENGTH_SHORT).show()
                     selectedEtiqueta = getString(R.string.selected_item)
                     chipsEtiquetas2(listaEtiquetas[position])
                 }
@@ -426,6 +484,84 @@ class FiltroProdutosFragment :  DialogFragment(), AdapterView.OnItemSelectedList
         /**SPINNER CONCELHOS **/
 
     }
+
+
+    fun filtrarPesquisaProdutos(){
+
+        // devolve ID das categorias relacionadas com distrito
+        val filtraDistrito= selectedDistrito
+
+        for (i in 0 until ListagemCategoriasCompleta.size) {
+            if (ListagemCategoriasCompleta[i].nome == filtraDistrito) {
+                 val _filtraDistritoId = ListagemCategoriasCompleta[i].id
+                    filtraDistritoId.add(_filtraDistritoId)
+            }
+        }
+
+        // devolve ID das categorias relacionadas com Concelho verificando se existe esse ID no array
+        val filtraConcelho=  selectedConcelho
+        for (i in 0 until ListagemCategoriasCompleta.size) {
+
+            if (ListagemCategoriasCompleta[i].nome == filtraConcelho) {
+                val _filtraDistritoId = ListagemCategoriasCompleta[i].id
+                val existeDistrito= filtraDistritoId.find { it == _filtraDistritoId }
+                if(existeDistrito==null) {
+                    filtraDistritoId.add(_filtraDistritoId)
+                }
+            }
+        }
+
+        // devolve ID da  categoria selecionada
+
+        val filtraCategoria= selectedCategoria
+        for (i in 0 until ListagemCategoriasCompleta.size) {
+
+            if (ListagemCategoriasCompleta[i].nome == filtraCategoria) {
+                val _filtraCategoriaId = ListagemCategoriasCompleta[i].id
+                //val existeDistrito= filtraDistritoId.find { it == _filtraCategoriaId }
+                //if(existeDistrito==null) {
+                    filtraCategoriaId=_filtraCategoriaId
+                //}
+            }
+        }
+
+
+
+
+        // devolve ID das etiquetas selecionadas
+        val filtraEtiqueta= selectedChips
+        for (i in 0 until ListagemEtiquetasCompleta.size) {
+            if (filtraEtiqueta != null) {
+                for (ii in 0 until filtraEtiqueta.size) {
+                    if (ListagemEtiquetasCompleta[i].nome == filtraEtiqueta[ii]) {
+                        val _filtraEtiquetaId = ListagemEtiquetasCompleta[i].id
+                        //  val existeDistrito= filtraDistritoId.find { it == _filtraEtiquetaId }
+                        //  if(existeDistrito==null) {
+                        filtraEtiquetaId.add(_filtraEtiquetaId)
+                        // }
+                    }
+                }
+            }
+        }
+
+
+
+
+        val _filtrodistrito=filtraDistritoId.joinToString( prefix = "category=", separator = "&category=")
+        val _filtroetiqueta= filtraEtiquetaId.joinToString( prefix = "tag=", separator = "&tag=")
+        stringPesquisa=""
+        stringPesquisa= "$_filtrodistrito&category=$filtraCategoriaId$_filtroetiqueta"
+        flag_pesquisa=true
+
+
+
+        this.dismiss()
+
+        Log.i(TAG, "+========================== CAT FILTER -> $stringPesquisa")
+
+    }
+
+
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
         TODO("Not yet implemented")

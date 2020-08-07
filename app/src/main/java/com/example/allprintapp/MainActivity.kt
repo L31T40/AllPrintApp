@@ -19,12 +19,10 @@ import com.android.volley.Response
 import com.android.volley.RetryPolicy
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.allprintapp.models.*
 import com.example.allprintapp.ui.filtrosprodutos.FiltroProdutosFragment
-import com.example.allprintapp.models.ListaCategoriasModel
-import com.example.allprintapp.models.ListaEtiquetasModel
 import com.example.allprintapp.ui.listaprodutos.DetalhesProdutoFragment
 import com.example.allprintapp.ui.listaprodutos.ProdutosRecyclerAdapter
-import com.example.allprintapp.models.ListagemDistritosModel
 import com.google.android.material.navigation.NavigationView
 import org.json.JSONArray
 import org.json.JSONException
@@ -35,14 +33,16 @@ import kotlin.collections.HashMap
 class MainActivity : AppCompatActivity(),
     ProdutosRecyclerAdapter.OnItemClickListener,
     DetalhesProdutoFragment.OnItemClickListener,
-    FiltroProdutosFragment.OnItemClickListener{
+    FiltroProdutosFragment.OnItemClickListener {
 
 
 /** listagem de distritos disponoveis na aplicaçao*/
     companion object {
         var ListagemDistritos = ArrayList<ListagemDistritosModel>()
         var ListagemCategorias = ArrayList<ListaCategoriasModel>()
+        var ListagemCategoriasCompleta = ArrayList<ListaCategoriasCompletaModel>()
         var ListagemEtiquetas = ArrayList<ListaEtiquetasModel>()
+        var ListagemEtiquetasCompleta = ArrayList<ListaEtiquetasCompletaModel>()
        // var ListagemCategorias :  HashMap<Int,String> = HashMap()
 
 
@@ -206,7 +206,12 @@ class MainActivity : AppCompatActivity(),
                             val existeDistrito= MainActivity.ListagemDistritos.find { it.distrito == categoria }
                             val existeConcelho= MainActivity.ListagemDistritos.find { it.concelho == categoria }
 
-
+                            ListagemCategoriasCompleta!!.add(
+                                ListaCategoriasCompletaModel(
+                                    categoriaId,
+                                    categoria
+                                )
+                            )
 
                             if ((ListagemCategorias.find { it.nome == categoria  }==null)&&(existeDistrito==null||existeConcelho==null )) {
                                 ListagemCategorias!!.add(
@@ -271,6 +276,12 @@ class MainActivity : AppCompatActivity(),
                         val etiquetaId = hit.getString("id")
                         val etiqueta = hit.getString("name")
 
+                        ListagemEtiquetasCompleta!!.add(
+                            ListaEtiquetasCompletaModel(
+                                etiquetaId,
+                                etiqueta
+                            )
+                        )
 //                        ListagemEtiquetas!!.add(etiqueta)
 //                        Log.i(ContentValues.TAG, "+=========== Etiquetas $etiqueta")
                         // verifica se a categoria ja existe nos distritos, concelhos ou no Array e nao adiciona à lista

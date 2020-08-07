@@ -11,10 +11,7 @@ import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.AuthFailureError
@@ -25,9 +22,10 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.allprintapp.MainActivity
 import com.example.allprintapp.R
-import com.example.allprintapp.ui.filtrosprodutos.FiltroProdutosFragment
 import com.example.allprintapp.models.ListagemDistritosModel
 import com.example.allprintapp.models.ListagemProdutosModel
+import com.example.allprintapp.ui.filtrosprodutos.FiltroProdutosFragment
+import com.example.allprintapp.ui.filtrosprodutos.FiltroProdutosFragment.Companion.stringPesquisa
 import kotlinx.android.synthetic.main.fragment_listagem_produtos_recyclerview.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -81,6 +79,7 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
     }
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //
@@ -100,6 +99,19 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    override fun recreate() {
+        if (fragmentManager != null) {
+            fragmentManager
+                ?.beginTransaction()
+                ?.detach(this)
+                ?.attach(this)
+                ?.commit()
+        }
+    }
+
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -107,7 +119,6 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
     ): View? {
         val view =
             inflater.inflate(R.layout.fragment_listagem_produtos_recyclerview, container, false)
-
         val coisas = MainActivity.ListagemDistritos
         val cenas = mListagemDistritos?.get(1)
         val coisas1 = coisas[1]
@@ -135,44 +146,29 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
         }
     }
 
+
+
+
      fun menuFiltrarProdutos() {
-/*        var firstName = "banana"
-        var lastName = "banana"
-        Toast.makeText(mContext, firstName, Toast.LENGTH_SHORT).show()*/
-//
-        //val clickedItem = mProdutosListagemModel!![position]
+
+       //  fragmentManager?.let { FiltroProdutosFragment(this).show(it,"FiltroDialog") }
 
         val dialogFragment : DialogFragment = FiltroProdutosFragment()
 
-//        val bundle = Bundle()
-//        bundle.putString(EXTRA_URL, clickedItem.imageUrl)
-//        bundle.putString(EXTRA_ID, clickedItem.id)
-//        bundle.putString(EXTRA_NAME, clickedItem.nome)
-//        bundle.putString(EXTRA_PRICE, clickedItem.preco)
-//        bundle.putString(EXTRA_DESCRICAO, clickedItem.descricao)
-//        bundle.putString(EXTRA_DESCRICAOCURTA, clickedItem.descricaocurta)
-//        bundle.putString(EXTRA_STOCK, clickedItem.stockqt)
-//        bundle.putBoolean("notAlertDialog", true)
-//        dialogFragment.arguments = bundle
-
 
         val fm = (mContext as FragmentActivity).supportFragmentManager
-       // dialogFragment.arguments = bundle
         val ft: FragmentTransaction
         ft = fm.beginTransaction()
-        val prev = mContext.supportFragmentManager.findFragmentByTag("dialog")
+        val prev = mContext.supportFragmentManager.findFragmentByTag("FiltroDialog")
         if (prev != null)
         {
             ft.remove(prev)
         }
         ft.addToBackStack(null)
-        dialogFragment.show(ft, "dialog")
+        dialogFragment.show(ft, "FiltroDialog")
 
 
     }
-
-
-
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -231,9 +227,83 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
 
     //Faz o parse do JSON de informção dos produtos através do middleware usando um token OAUTH2
     fun getDataProdutos(pag: String) {
+        var url: String? = null
         val token =
             "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiN2ViYTk4YmI3YTk4OWI2NjI1YThkZjAyOTA3MWMxZTI3NzZkY2UzNmRlZmM1ZGE5Nzk0MjliMTNhNGUzN2RjODFiODkwOGNlYzNjY2M5YjgiLCJpYXQiOjE1OTM2Mzc4ODYsIm5iZiI6MTU5MzYzNzg4NiwiZXhwIjoxNjI1MTczODg2LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.F5RId5LSLp19uFpxXrpU2KG1dvvE9so9NFc_HTrPCsUrg-ObcHh4tJ1RRtURcMx4qmoZ0z4tk9bfGGB9TM2DjsT2tfDDokqiGdTYdboHmqkSlGKTMFZ897CFtYBlK_ETn4Cj4HoE3bG0djTHftuutXvZYzMhuWXGILkY3dfSQP2PQRwDY2CHBwAtc9CMveIdyAYE9liYF9MyjK4-pnLJvNiI5fxQvpfWBjague_-ffmFsmvqO4UjUfpZVKkLK-RjWdHtYl2EyXOejT6O4pJMANahVXJPPC97fKzKfU9pOMIVK1mMnv6TKpvz9smq7Hdg2XUjuRJ6FEHOBp3-qtX_FIGYSzQAhBlD4ITpi8jAFN4BMV-rxTs9kaxSLu_TT7OIw9JWfm40z9foBvgeDrlOYmTG1q4GI5BwteQ_31TngFkY8vDzeDxr8HBpFEogw1aAvHBJifARzR7t48FG3J9EENNGDG1LddvRgMB3a-55TQJlho6MGXodT3LRGLXoikySHjPcDEl9PbncUnkKvPh97IcdCg1OkwTnbZkgj4zyAdafjhW7vtwS9D-FIdN0g8vJHS7pSvFThtLfqCHwUuCS-Bz6cx-r1mUuUEidmz3w94clBE9EG2ZvToLmqDLy93hOM6raU6NdIlCVhnQ-fjMogknvtA7qEm5cdC8I3pQlCGw"
-        val url = "https://middleware.allprint.pt/api/produtos/$pag"
+        if (flag_pesquisa){
+            url = "https://middleware.allprint.pt/api/produtosfiltro/$stringPesquisa"}
+        else{
+            url = "https://middleware.allprint.pt/api/produtos/$pag" }
+
+        Log.i(ContentValues.TAG, "+========================== URL $url")
+        val stringRequest: StringRequest =
+            object : StringRequest(Method.POST, url, Response.Listener { response ->
+                try {
+                    val jsonArray = JSONArray(response)
+                    for (i in 0 until jsonArray.length()) {
+                        val hit = jsonArray.getJSONObject(i)
+                        val id = hit.getString("id")
+                        val nome = hit.getString("name")
+                        val preco = hit.getString("price")
+                        val descricao = hit.getString("description")
+                        val descricaocurta = hit.getString("short_description")
+                        val stockqt = hit.getString("stock_quantity")
+                        val imageUrl = hit.getString("image")
+                        mModelProdutoListagens!!.add(
+                            ListagemProdutosModel(
+                                id,
+                                nome,
+                                preco,
+                                descricao,
+                                descricaocurta,
+                                stockqt,
+                                imageUrl
+                            )
+                        )
+                    }
+
+                    //loadRecyclerView()
+                    setAdapter()
+                    setRVLayoutManager()
+
+
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+                //Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+            }, Response.ErrorListener { volleyerror ->
+                /*progressDialog.dismiss()*/
+
+                Toast.makeText(context, volleyerror.message, Toast.LENGTH_LONG).show()
+            }) {
+                @Throws(AuthFailureError::class)
+                override fun getHeaders(): Map<String, String>? {
+                    val headers: MutableMap<String, String> = HashMap()
+                    val auth = "Bearer $token"
+                    headers["Authorization"] = auth
+                    headers["Content-Type"] = "application/x-www-form-urlencoded"
+                    headers["Accept"] = "application/json"
+                    return headers
+                }
+            }
+        stringRequest.retryPolicy = DefaultRetryPolicy(
+            DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+        mRequestQueue!!.add(stringRequest)
+        flag_pesquisa=false
+    }
+
+
+    //Faz o parse do JSON de informção dos produtos através do middleware usando um token OAUTH2
+    fun getDataProdutosFiltro() {
+        val token =
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiN2ViYTk4YmI3YTk4OWI2NjI1YThkZjAyOTA3MWMxZTI3NzZkY2UzNmRlZmM1ZGE5Nzk0MjliMTNhNGUzN2RjODFiODkwOGNlYzNjY2M5YjgiLCJpYXQiOjE1OTM2Mzc4ODYsIm5iZiI6MTU5MzYzNzg4NiwiZXhwIjoxNjI1MTczODg2LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.F5RId5LSLp19uFpxXrpU2KG1dvvE9so9NFc_HTrPCsUrg-ObcHh4tJ1RRtURcMx4qmoZ0z4tk9bfGGB9TM2DjsT2tfDDokqiGdTYdboHmqkSlGKTMFZ897CFtYBlK_ETn4Cj4HoE3bG0djTHftuutXvZYzMhuWXGILkY3dfSQP2PQRwDY2CHBwAtc9CMveIdyAYE9liYF9MyjK4-pnLJvNiI5fxQvpfWBjague_-ffmFsmvqO4UjUfpZVKkLK-RjWdHtYl2EyXOejT6O4pJMANahVXJPPC97fKzKfU9pOMIVK1mMnv6TKpvz9smq7Hdg2XUjuRJ6FEHOBp3-qtX_FIGYSzQAhBlD4ITpi8jAFN4BMV-rxTs9kaxSLu_TT7OIw9JWfm40z9foBvgeDrlOYmTG1q4GI5BwteQ_31TngFkY8vDzeDxr8HBpFEogw1aAvHBJifARzR7t48FG3J9EENNGDG1LddvRgMB3a-55TQJlho6MGXodT3LRGLXoikySHjPcDEl9PbncUnkKvPh97IcdCg1OkwTnbZkgj4zyAdafjhW7vtwS9D-FIdN0g8vJHS7pSvFThtLfqCHwUuCS-Bz6cx-r1mUuUEidmz3w94clBE9EG2ZvToLmqDLy93hOM6raU6NdIlCVhnQ-fjMogknvtA7qEm5cdC8I3pQlCGw"
+
+
+
+        val url = "https://middleware.allprint.pt/api/produtos/$stringPesquisa"
 
         Log.i(ContentValues.TAG, "+========================== URL $url")
         val stringRequest: StringRequest =
@@ -296,6 +366,7 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
     }
 
 
+
     private fun LoadMoreData() {
         //Add the Loading View
         mProdutosAdapter?.addLoadingView()
@@ -342,10 +413,12 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
         const val EXTRA_DESCRICAO = "description"
         const val EXTRA_DESCRICAOCURTA = "short_description"
         const val EXTRA_STOCK = "stock_quantity"
+        var flag_pesquisa=false
     }
 
     override fun onItemClick(position: Int) {
         TODO("Not yet implemented")
     }
+
 }
 

@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
@@ -20,13 +21,14 @@ import com.example.allprintapp.MainActivity
 import com.example.allprintapp.R
 import com.example.allprintapp.ui.utils.Utils.Companion.cortaString
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_detalhes_produto.*
 
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-
+private var buttonSairDetalhes: Button? = null
 /**
  * A simple [Fragment] subclass.
  * Use the [DetalhesProdutoFragment.newInstance] factory method to
@@ -57,21 +59,22 @@ interface OnItemClickListener {
         }
 
         this.dialog?.setTitle("BANAAN")
-
+        buttonSairDetalhes = view.findViewById<View>(R.id.btn_SairDetalhes) as Button
+        buttonSairDetalhes!!.setOnClickListener {  this.dismiss()}
         val mLocais = MainActivity.ListagemDistritos
         var mDistrito: String? = null
         var mConcelho: String? = null
 
 
 
-
-        val index = mLocais.indexOfFirst { it.prefixo == "1AV3AN_" } // -1 if not found
-        if (index >= 0) {
-            val locais = mLocais[index]
-            mDistrito = locais.distrito
-            mConcelho = locais.concelho
-
-        }
+//
+//        val index = mLocais.indexOfFirst { it.prefixo == "1AV3AN_" } // -1 if not found
+//        if (index >= 0) {
+//            val locais = mLocais[index]
+//            mDistrito = locais.distrito
+//            mConcelho = locais.concelho
+//
+//        }
 
         val textViewId: TextView = view.findViewById(R.id.textViewRefDetalhes) as TextView
         val textId = arguments?.getString(EXTRA_ID)
