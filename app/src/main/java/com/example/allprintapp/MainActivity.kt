@@ -37,23 +37,23 @@ class MainActivity : AppCompatActivity(),
 
 
 /** listagem de distritos disponoveis na aplicaçao*/
-    companion object {
-        var ListagemDistritos = ArrayList<ListagemDistritosModel>()
-        var ListagemCategorias = ArrayList<ListaCategoriasModel>()
-        var ListagemCategoriasCompleta = ArrayList<ListaCategoriasCompletaModel>()
-        var ListagemEtiquetas = ArrayList<ListaEtiquetasModel>()
-        var ListagemEtiquetasCompleta = ArrayList<ListaEtiquetasCompletaModel>()
-       // var ListagemCategorias :  HashMap<Int,String> = HashMap()
-
-
-        //var ListagemEtiquetas :   HashMap<Int,String> = HashMap()
-
-    }
+//    companion object {
+//        var ListagemDistritos = ArrayList<ListagemDistritosModel>()
+//        var ListagemCategorias = ArrayList<ListaCategoriasModel>()
+//        var ListagemCategoriasCompleta = ArrayList<ListaCategoriasCompletaModel>()
+//        var ListagemEtiquetas = ArrayList<ListaEtiquetasModel>()
+//        var ListagemEtiquetasCompleta = ArrayList<ListaEtiquetasCompletaModel>()
+//       // var ListagemCategorias :  HashMap<Int,String> = HashMap()
+//
+//
+//        //var ListagemEtiquetas :   HashMap<Int,String> = HashMap()
+//
+//    }
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mDrawerLayout: DrawerLayout
     private lateinit var navView: NavigationView
    // private var preferenceHelper: PreferenceHelper? = null
-    private var mListagemDistritos: ArrayList<ListagemDistritosModel>? = null
+ //   private var mListagemDistritos: ArrayList<ListagemDistritosModel>? = null
 
 
 
@@ -81,15 +81,15 @@ class MainActivity : AppCompatActivity(),
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        mDrawerLayout = findViewById(R.id.drawer_layout)
+        //mDrawerLayout = findViewById(R.id.drawer_layout)
 
-        mListagemDistritos = ArrayList()
-
-        getJSONListagemDistritos()
-        DoAsync {
-            getJSONListagemCategorias()
-
-        }.execute()
+//        mListagemDistritos = ArrayList()
+//
+//        getJSONListagemDistritos()
+//        DoAsync {
+//            getJSONListagemCategorias()
+//
+//        }.execute()
 
 /*        doAsync {
             getJSONListagemCategorias()
@@ -99,11 +99,6 @@ class MainActivity : AppCompatActivity(),
             getJSONListagemEtiquetas()
         }.execute()*/
 
-
-
-
-//        val g =  application as VarGlobals // Criar Variavel global com ID utilizador
-//        g.listagemDistritos = mListagemDistritos
     }
 
     //Criar menu definiçoes top
@@ -122,6 +117,7 @@ class MainActivity : AppCompatActivity(),
 
 
 
+/*
 
     private fun getJSONListagemDistritos() {
 
@@ -130,8 +126,6 @@ class MainActivity : AppCompatActivity(),
         Log.i(ContentValues.TAG, "+==========================Nome $urlDistritos")
         val stringRequest: StringRequest = object : StringRequest(Method.POST,urlDistritos, Response.Listener { response ->
             try {
-//                val cenas = JSONObject(response)
-//                val jsonArray:JSONArray =  cenas.getJSONArray("cenas")
                 val jsonArray =  JSONArray(response)
                 val tamanho = jsonArray.length()
                 Log.i(ContentValues.TAG, "+=========== Distritos $tamanho")
@@ -160,7 +154,9 @@ class MainActivity : AppCompatActivity(),
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
-            /**adicionar listagem de distrito ao companion object*/
+            */
+/**adicionar listagem de distrito ao companion object*//*
+
            // ListagemDistritos= mListagemDistritos!!
             //Toast.makeText(applicationContext, response, Toast.LENGTH_LONG).show()
         }, Response.ErrorListener { volleyerror ->
@@ -230,7 +226,9 @@ class MainActivity : AppCompatActivity(),
                     getJSONListagemEtiquetas()
                     //Toast.makeText(context, response, Toast.LENGTH_LONG).show()
                 }, Response.ErrorListener { volleyerror ->
-                    /*progressDialog.dismiss()*/
+                    */
+/*progressDialog.dismiss()*//*
+
 
                     Toast.makeText(applicationContext, volleyerror.message, Toast.LENGTH_LONG).show()
                 }) {
@@ -294,19 +292,16 @@ class MainActivity : AppCompatActivity(),
                                     etiqueta
                                 )
                             )
-                            //ListagemEtiquetas!!.put(etiquetaId.toInt(),etiqueta)
-                            //ListagemEtiquetas!!.add(etiqueta)
                             Log.i(ContentValues.TAG, "+=========== Etiquetas $etiqueta")}
-
                     }
-
-
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
                 //Toast.makeText(context, response, Toast.LENGTH_LONG).show()
             }, Response.ErrorListener { volleyerror ->
-                /*progressDialog.dismiss()*/
+                */
+/*progressDialog.dismiss()*//*
+
                 Toast.makeText(applicationContext, volleyerror.message, Toast.LENGTH_LONG).show()
             }) {
                 @Throws(AuthFailureError::class)
@@ -328,6 +323,7 @@ class MainActivity : AppCompatActivity(),
 
     }
 
+*/
 
 
 /*
@@ -419,9 +415,6 @@ class MainActivity : AppCompatActivity(),
     }
 }
 
-private operator fun RetryPolicy.invoke(defaultRetryPolicy: DefaultRetryPolicy) {
-
-}
 
 class DoAsync(val handler: () -> Unit) : AsyncTask<Void, Void, Void>() {
     override fun doInBackground(vararg params: Void?): Void? {

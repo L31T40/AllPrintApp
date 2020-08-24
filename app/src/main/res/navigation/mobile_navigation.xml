@@ -22,9 +22,9 @@
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.example.allprintapp.ui.slideshow.SlideshowFragment"
+        android:name="com.example.allprintapp.ui.filtrosprodutos.FiltroProdutosFragment"
         android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_filtro_produtos" />
 
     <fragment
         android:id="@+id/nav_categorias"

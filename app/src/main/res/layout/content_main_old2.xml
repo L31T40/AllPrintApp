@@ -24,6 +24,12 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="@+id/nav_host_fragment">
 
+        <FrameLayout
+            android:id="@+id/nav1"
+            android:layout_width="match_parent"
+            android:layout_height="575dp"
+            android:layout_marginBottom="?attr/actionBarSize" />
+
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottomBar"
             android:layout_width="match_parent"

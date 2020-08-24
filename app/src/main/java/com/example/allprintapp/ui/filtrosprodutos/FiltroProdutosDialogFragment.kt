@@ -1,20 +1,21 @@
 package com.example.allprintapp.ui.filtrosprodutos
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Constraints.TAG
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.core.view.size
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.transition.TransitionManager
 import com.example.allprintapp.LoginActivity.Companion.ListagemCategorias
 import com.example.allprintapp.MainActivity
@@ -23,7 +24,6 @@ import com.example.allprintapp.LoginActivity.Companion.ListagemDistritos
 import com.example.allprintapp.LoginActivity.Companion.ListagemEtiquetas
 import com.example.allprintapp.LoginActivity.Companion.ListagemEtiquetasCompleta
 import com.example.allprintapp.R
-import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.flag_pesquisa
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.fragment_filtro_produtos.*
@@ -69,7 +69,7 @@ private var btnFiltrar: Button? = null
  * Use the [FiltroProdutosFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
+class FiltroProdutosDialogFragment  :  DialogFragment(), AdapterView.OnItemSelectedListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -132,28 +132,23 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
         // Inflate the layout for this fragment
         val view= inflater.inflate(R.layout.fragment_filtro_produtos, container, false)
 
-
-
-
         spinnerDistritos=view.findViewById<Spinner>(R.id.spinner_distrito) as Spinner
         spinnerConcelhos=view.findViewById<Spinner>(R.id.spinner_concelho) as Spinner
         spinnerCategoria=view.findViewById<Spinner>(R.id.spinner_categorias) as Spinner
         spinnerEtiqueta=view.findViewById<Spinner>(R.id.spinner_etiquetas) as Spinner
         btnFiltrar = view.findViewById<View>(R.id.button_Filtro) as Button
-       //btnFiltrar!!.setOnClickListener { filtrarPesquisaProdutos() }
-//        btnFiltrar!!.setOnClickListener{
-//
-//        }
+       // btnFiltrar!!.setOnClickListener { filtrarPesquisaProdutos() }
+        btnFiltrar!!.setOnClickListener{
+
+        }
         spinnerDistritos!!.onItemSelectedListener=this
 
         spinnerDistritos()
         spinnerCategorias()
         spinnerEtiquetas()
-      //  spinnerConcelhos()
-       // chipsEtiquetas(view)
 
 
-
+//
 //        if (dialog != null && dialog?.window != null) {
 //            dialog?.window?.setBackgroundDrawable( ColorDrawable(Color.TRANSPARENT))
 //            dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
@@ -168,57 +163,15 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
 
-    lateinit var context: AppCompatActivity
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        this.context = context as AppCompatActivity
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        //val fragment : Fragment  = ListagemProdutosFragment()
-
-//
-//        val bundle = Bundle()
-//        bundle.putString(ListagemProdutosFragment.STRING_PESQUISA,stringPesquisa )
-//        fragment.arguments = bundle
-
-        btnFiltrar?.setOnClickListener {
-            flag_pesquisa = true
-            filtrarPesquisaProdutos()
-            replaceFragment(ListagemProdutosFragment.newInstance())
-//            requireActivity().supportFragmentManager.beginTransaction()
-//                .add(R.id.nav_host_fragment, ListagemProdutosFragment.newInstance())
-//                //.addToBackStack("ListagemProdutosFragment")
-//                .commit()
-        }
-
-//        val fm =  context.supportFragmentManager
-//        val fragmentTransaction: FragmentTransaction
-//        val fragment = ListagemProdutosFragment()
-//        fragmentTransaction = fm.beginTransaction()
-//        fragmentTransaction.replace(R.id.nav_host_fragment, fragment)
-//            .addToBackStack(null)
-//        fragmentTransaction.commit()
-
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.nav_host_fragment, fragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
-    }
 
     @SuppressLint("SetTextI18n")
     fun chipsEtiquetas(view:View){
 
         /** implementaçao de chips**/
         // set the button click listener
-        val btnFiltrarSpinner=   view.findViewById<Spinner>(R.id.spinner_etiquetas)
-        btnFiltrarSpinner.setOnClickListener{
+        val btnfiltrar=   view.findViewById<Spinner>(R.id.spinner_etiquetas)
+        btnfiltrar.setOnClickListener{
             // Initialize a new chip instance
             val chip = Chip(context)
             chip.text = "Random ${Random.nextInt(100)}"
@@ -294,7 +247,7 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
             //.filter { (it as Chip).isChecked }
             .map { (it as Chip).text.toString() }
             .toList()
-        Log.i(TAG, "+========================== CHIPPPPSSS -> ${selectedChips!!.get(0)}")
+        Log.i(TAG, "+========================== CHIPPPPSSS -> ${selectedChips!![0]}")
     //    Log.i(TAG, "+========================== CHIPPPPSSS -> ${selectedChips!!.get(1)}")
 
     }
@@ -318,7 +271,7 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
 
 
         //val index = mLocais.indexOfFirst { it.prefixo == "1AV3AN_" } // -1 if not found
-
+        listaDistritos.clear()
         //Coloca apenas os distritos com produtos no spinner
         mLocais.groupBy { it.distrito }.forEach { (name, list) ->
             val existeDistrito= ListagemCategoriasCompleta.find { it.nome == name }
@@ -368,42 +321,12 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
 
     fun spinnerConcelhos(){
         /**SPINNER CONCELHOS**/
-        //val mLocais = MainActivity.ListagemDistritos
-
-
-        //val index = mLocais.indexOfFirst { it.prefixo == "1AV3AN_" } // -1 if not found
-//        val index = mLocais.indexOfFirst { it.distrito == selectedDistrito } // -1 if not found
-//        mLocais.groupBy{ it.concelho }.forEach{ (name, index) ->
-//            listaConcelhos.add(name)
-//        }
 
 
         val index = mLocais.indexOfFirst { it.distrito == selectedDistrito } // -1 if not found
-//        if (index >= 0) {
-//            val locais = mLocais[index]
-//
-//            mDistrito = locais.prefixo
-//            mConcelho = locais.concelho
-//
-//        }
+
         listaConcelhos.clear()
 
-        //Coloca apenas os distritos com produtos no spinner
-//        mLocais.groupBy { it.distrito }.forEach { (name, list) ->
-//            val existeDistrito= MainActivity.ListagemCategoriasCompleta.find { it.nome == name }
-//            if(existeDistrito!=null){
-//                listaDistritos.add(name)
-//            }
-//
-//        }
-
-//        mLocais.groupBy { it.distrito }.forEach { (name, list) ->
-//            val existeConcelho= MainActivity.ListagemCategoriasCompleta.find { it.nome == name }
-//            if(existeConcelho!=null){
-//                listaConcelhos.add(name)
-//            }
-//
-//        }
 
         for (i in 0 until mLocais.size) {
             if (mLocais[i].distrito == selectedDistrito) {
@@ -454,7 +377,7 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
 
     fun spinnerCategorias(){
         /**SPINNER CONCELHOS**/
-
+        listaCategorias.clear()
 
         mCategoria.groupBy { it.nome }.forEach { (name, list) ->
             listaCategorias.add(name)
@@ -498,7 +421,7 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
 
 
     fun spinnerEtiquetas(){
-
+        listaEtiquetas.clear()
         mEtiqueta.groupBy { it.nome }.forEach { (name, list) ->
             listaEtiquetas.add(name)
         }
@@ -594,8 +517,6 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
         }
 
 
-
-
         val _filtrodistrito=filtraDistritoId.joinToString( prefix = "category=", separator = "&category=")
         val _filtroetiqueta= filtraEtiquetaId.joinToString( prefix = "tag=", separator = "&tag=")
         stringPesquisa=""
@@ -604,7 +525,7 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
 
 
 
-       // this.dismiss()
+        this.dismiss()
 
         Log.i(TAG, "+========================== CAT FILTER -> $stringPesquisa")
 

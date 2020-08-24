@@ -10,8 +10,9 @@ import android.os.Handler
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.*
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.AuthFailureError
@@ -20,25 +21,28 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.example.allprintapp.LoginActivity.Companion.ListagemDistritos
 import com.example.allprintapp.MainActivity
 import com.example.allprintapp.R
 import com.example.allprintapp.models.ListagemDistritosModel
 import com.example.allprintapp.models.ListagemProdutosModel
-import com.example.allprintapp.ui.filtrosprodutos.FiltroProdutosFragment
 import com.example.allprintapp.ui.filtrosprodutos.FiltroProdutosFragment.Companion.stringPesquisa
 import kotlinx.android.synthetic.main.fragment_listagem_produtos_recyclerview.*
 import org.json.JSONArray
 import org.json.JSONException
 import java.util.*
 
+private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM2 = "param2"
 /**
  * A fragment representing a list of Items.
  */
 
 @Suppress("DEPRECATION")
 
-open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItemClickListener {
-
+open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemClickListener {
+    private var param1: String? = null
+    private var param2: String? = null
 
     private var columnCount = 1
     var ma: Activity? = null
@@ -67,6 +71,30 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
 
     lateinit var mContext: AppCompatActivity
 
+    companion object {
+
+
+
+//        fun newInstance(): Fragment {
+//            TODO("Not yet implemented")
+//        }
+
+          fun newInstance() = ListagemProdutosFragment()
+
+
+        // TODO: Customize parameter argument names
+        const val ARG_COLUMN_COUNT = "column-count"
+        const val EXTRA_URL = "imageUrl"
+        const val EXTRA_ID = "id"
+        const val EXTRA_NAME = "name"
+        const val EXTRA_PRICE = "price"
+        const val EXTRA_DESCRICAO = "description"
+        const val EXTRA_DESCRICAOCURTA = "short_description"
+        const val EXTRA_STOCK = "stock_quantity"
+        const val STRING_PESQUISA: String = ""
+        var flag_pesquisa=false
+    }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -86,10 +114,10 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
         setHasOptionsMenu(true) // para criar menu Filtro
 //
 
-
         arguments?.let {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
+
     }
 
     // cria menu Filtro
@@ -97,16 +125,6 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
         // TODO Add your menu entries here
         inflater.inflate(R.menu.filter_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun recreate() {
-        if (fragmentManager != null) {
-            fragmentManager
-                ?.beginTransaction()
-                ?.detach(this)
-                ?.attach(this)
-                ?.commit()
-        }
     }
 
 
@@ -119,15 +137,20 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
     ): View? {
         val view =
             inflater.inflate(R.layout.fragment_listagem_produtos_recyclerview, container, false)
-        val coisas = MainActivity.ListagemDistritos
+        val coisas = ListagemDistritos
         val cenas = mListagemDistritos?.get(1)
         val coisas1 = coisas[1]
 
-
+        // This callback will only be called when MyFragment is at least Started.
+//        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
+//            // Handle the back button even
+//            fragmentManager?.popBackStack()
+//        }
 
         return view
 
     }
+
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -149,11 +172,12 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
 
 
 
+
      fun menuFiltrarProdutos() {
 
        //  fragmentManager?.let { FiltroProdutosFragment(this).show(it,"FiltroDialog") }
 
-        val dialogFragment : DialogFragment = FiltroProdutosFragment()
+ /*       val fragment : Fragment = FiltroProdutosFragment()
 
 
         val fm = (mContext as FragmentActivity).supportFragmentManager
@@ -165,10 +189,13 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
             ft.remove(prev)
         }
         ft.addToBackStack(null)
-        dialogFragment.show(ft, "FiltroDialog")
+         fragment.view(ft, "FiltroDialog")*/
 
 
     }
+
+
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -234,6 +261,8 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
             url = "https://middleware.allprint.pt/api/produtosfiltro/$stringPesquisa"}
         else{
             url = "https://middleware.allprint.pt/api/produtos/$pag" }
+
+
 
         Log.i(ContentValues.TAG, "+========================== URL $url")
         val stringRequest: StringRequest =
@@ -402,23 +431,17 @@ open class ListagemProdutosFragment : Fragment(), ProdutosRecyclerAdapter.OnItem
     }
 
 
-    companion object {
 
-        // TODO: Customize parameter argument names
-        const val ARG_COLUMN_COUNT = "column-count"
-        const val EXTRA_URL = "imageUrl"
-        const val EXTRA_ID = "id"
-        const val EXTRA_NAME = "name"
-        const val EXTRA_PRICE = "price"
-        const val EXTRA_DESCRICAO = "description"
-        const val EXTRA_DESCRICAOCURTA = "short_description"
-        const val EXTRA_STOCK = "stock_quantity"
-        var flag_pesquisa=false
-    }
 
     override fun onItemClick(position: Int) {
         TODO("Not yet implemented")
     }
 
+    override fun recreate() {
+        TODO("Not yet implemented")
+    }
+
+
 }
+
 
