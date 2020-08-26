@@ -21,10 +21,14 @@
         tools:layout="@layout/fragment_listagem_produtos_recyclerview" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
+        android:id="@+id/nav_pesquisa"
         android:name="com.example.allprintapp.ui.filtrosprodutos.FiltroProdutosFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_filtro_produtos" />
+        android:label="@string/menu_pesquisa"
+        tools:layout="@layout/fragment_filtro_produtos" >
+        <action
+            android:id="@+id/action_nav_pesquisa_to_nav_loja"
+            app:destination="@id/nav_loja" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_categorias"

@@ -19,9 +19,9 @@
             android:title="@string/menu_categorias" />
 
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
+            android:id="@+id/nav_pesquisa"
+            android:icon="?android:attr/actionModeWebSearchDrawable"
+            android:title="@string/menu_pesquisa" />
 
         <item android:title="@string/defnicoes">
             <menu>

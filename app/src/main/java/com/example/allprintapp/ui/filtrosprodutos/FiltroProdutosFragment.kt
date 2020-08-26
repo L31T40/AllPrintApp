@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
+import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Constraints.TAG
 import androidx.core.content.ContextCompat
@@ -15,6 +17,7 @@ import androidx.core.view.children
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.MutableLiveData
 import androidx.transition.TransitionManager
 import com.example.allprintapp.LoginActivity.Companion.ListagemCategorias
 import com.example.allprintapp.MainActivity
@@ -27,6 +30,7 @@ import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.flag_pesquisa
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.fragment_filtro_produtos.*
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.random.Random
 
 
@@ -178,31 +182,11 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        //val fragment : Fragment  = ListagemProdutosFragment()
-
-//
-//        val bundle = Bundle()
-//        bundle.putString(ListagemProdutosFragment.STRING_PESQUISA,stringPesquisa )
-//        fragment.arguments = bundle
-
         btnFiltrar?.setOnClickListener {
             flag_pesquisa = true
             filtrarPesquisaProdutos()
             replaceFragment(ListagemProdutosFragment.newInstance())
-//            requireActivity().supportFragmentManager.beginTransaction()
-//                .add(R.id.nav_host_fragment, ListagemProdutosFragment.newInstance())
-//                //.addToBackStack("ListagemProdutosFragment")
-//                .commit()
         }
-
-//        val fm =  context.supportFragmentManager
-//        val fragmentTransaction: FragmentTransaction
-//        val fragment = ListagemProdutosFragment()
-//        fragmentTransaction = fm.beginTransaction()
-//        fragmentTransaction.replace(R.id.nav_host_fragment, fragment)
-//            .addToBackStack(null)
-//        fragmentTransaction.commit()
-
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -302,22 +286,6 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
 
 
     fun spinnerDistritos(){
-        /**SPINNER DISTRITOS**/
-
-
-
-//        val existeDistrito= MainActivity.ListagemDistritos.find { it.distrito == etiqueta }
-//        val existeConcelho= MainActivity.ListagemDistritos.find { it.concelho == etiqueta }
-//        if (((MainActivity.ListagemEtiquetas.find { it.nome == etiqueta  }==null) && (MainActivity.ListagemCategorias.find { it.nome == etiqueta  }==null)) && (existeDistrito==null || existeConcelho==null )) {
-//            MainActivity.ListagemEtiquetas!!.add(
-//                ListaEtiquetasModel(
-//                    etiquetaId,
-//                    etiqueta
-//                )
-//            )
-
-
-        //val index = mLocais.indexOfFirst { it.prefixo == "1AV3AN_" } // -1 if not found
 
         //Coloca apenas os distritos com produtos no spinner
         mLocais.groupBy { it.distrito }.forEach { (name, list) ->
@@ -367,43 +335,11 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
 
 
     fun spinnerConcelhos(){
-        /**SPINNER CONCELHOS**/
-        //val mLocais = MainActivity.ListagemDistritos
-
-
-        //val index = mLocais.indexOfFirst { it.prefixo == "1AV3AN_" } // -1 if not found
-//        val index = mLocais.indexOfFirst { it.distrito == selectedDistrito } // -1 if not found
-//        mLocais.groupBy{ it.concelho }.forEach{ (name, index) ->
-//            listaConcelhos.add(name)
-//        }
-
 
         val index = mLocais.indexOfFirst { it.distrito == selectedDistrito } // -1 if not found
-//        if (index >= 0) {
-//            val locais = mLocais[index]
-//
-//            mDistrito = locais.prefixo
-//            mConcelho = locais.concelho
-//
-//        }
+
         listaConcelhos.clear()
 
-        //Coloca apenas os distritos com produtos no spinner
-//        mLocais.groupBy { it.distrito }.forEach { (name, list) ->
-//            val existeDistrito= MainActivity.ListagemCategoriasCompleta.find { it.nome == name }
-//            if(existeDistrito!=null){
-//                listaDistritos.add(name)
-//            }
-//
-//        }
-
-//        mLocais.groupBy { it.distrito }.forEach { (name, list) ->
-//            val existeConcelho= MainActivity.ListagemCategoriasCompleta.find { it.nome == name }
-//            if(existeConcelho!=null){
-//                listaConcelhos.add(name)
-//            }
-//
-//        }
 
         for (i in 0 until mLocais.size) {
             if (mLocais[i].distrito == selectedDistrito) {
@@ -433,7 +369,7 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
                 AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>,
-                    view: View, position: Int, id: Long
+                    view: View?, position: Int, id: Long
                 ) {
                     Toast.makeText(
                         context,
@@ -476,7 +412,7 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
                 AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>,
-                    view: View, position: Int, id: Long
+                    view: View?, position: Int, id: Long
                 ) {
                     Toast.makeText(
                         context,
@@ -518,7 +454,7 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
                 AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>,
-                    view: View, position: Int, id: Long
+                    view: View?, position: Int, id: Long
                 ) {
                     Toast.makeText( context, getString(R.string.selected_item) + " " +" " + mEtiqueta[position].nome, Toast.LENGTH_SHORT).show()
                     selectedEtiqueta = getString(R.string.selected_item)
@@ -619,6 +555,8 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
     }
+
+
 
 }
 
