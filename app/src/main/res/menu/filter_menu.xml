@@ -4,9 +4,9 @@
 
 
     <item
-        android:id="@+id/menu_pesquisa"
+        android:id="@+id/menu_carrinho"
         android:contentDescription="search"
-        android:icon="@drawable/ic_search"
+        android:icon="@drawable/ic_carrinho2"
         android:title="search"
         app:showAsAction="ifRoom" />
     <item
@@ -14,10 +14,10 @@
         android:icon="@drawable/ic_filter"
         android:title="filtrar"
         app:showAsAction="ifRoom" />
-    <item
+<!--    <item
         android:id="@+id/menu_sort"
         android:icon="@drawable/ic_sort"
         android:title="sort"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" />-->
 
 </menu>

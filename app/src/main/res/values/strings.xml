@@ -7,7 +7,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Definições</string>
 
-    <string name="menu_home">Home</string>
+    <string name="menu_home">Encomendas</string>
     <string name="menu_loja">Loja</string>
     <string name="menu_pesquisa">Pesquisar</string>
     <string name="menu_categorias">Categorias</string>
@@ -18,8 +18,8 @@
     <string name="enter_username">E-Mail....</string>
     <string name="enter_password">Palavra Passe...</string>
     <string name="login">Entrar</string>
-    <string name="menu_logout">Sair</string>
-    <string name="defnicoes">Definições</string>
+    <string name="menu_logout">Logout</string>
+    <string name="definicoes">Definições</string>
     <string name="entrar">ENTRAR</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

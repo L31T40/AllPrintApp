@@ -18,11 +18,10 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.example.allprintapp.LoginActivity.Companion.ListagemDistritos
-import com.example.allprintapp.MainActivity
 import com.example.allprintapp.R
 import com.example.allprintapp.ui.utils.Utils.Companion.cortaString
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_detalhes_produto.*
+
 
 
 // TODO: Rename parameter arguments, choose names that match

@@ -86,11 +86,13 @@
             android:tooltipText="Quantidade"
             android:typeface="sans" />
 
-        <ImageView
-            android:id="@+id/imageView2"
+        <ImageButton
+            android:id="@+id/btn_AddCart"
             android:layout_width="18dp"
-            android:layout_height="43dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="#00FFFFFF"
+            android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_carrinho"
             tools:srcCompat="@drawable/ic_carrinho" />
 

@@ -1,7 +1,7 @@
 package com.example.allprintapp.ui.utils
 
 import android.app.Application
-import com.example.allprintapp.models.ListagemDistritosModel
+import com.example.allprintapp.models.DistritosModel
 import java.util.*
 
 class VarGlobals : Application() {
@@ -15,5 +15,5 @@ class VarGlobals : Application() {
     var ViaturasUser: ArrayList<HashMap<String, String>>? =
         null // Lista de viatura do Utilizador + Empresa
     var flagDecoration = false // para detetar decoração na recyclerview
-    var listagemDistritos: ArrayList<ListagemDistritosModel>? = null
+    var distritos: ArrayList<DistritosModel>? = null
 }

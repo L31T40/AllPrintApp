@@ -8,19 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.activity.OnBackPressedCallback
-import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Constraints.TAG
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.MutableLiveData
 import androidx.transition.TransitionManager
 import com.example.allprintapp.LoginActivity.Companion.ListagemCategorias
-import com.example.allprintapp.MainActivity
 import com.example.allprintapp.LoginActivity.Companion.ListagemCategoriasCompleta
 import com.example.allprintapp.LoginActivity.Companion.ListagemDistritos
 import com.example.allprintapp.LoginActivity.Companion.ListagemEtiquetas
@@ -30,14 +27,13 @@ import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.flag_pesquisa
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.fragment_filtro_produtos.*
-import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.random.Random
 
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+const val ARG_PARAM1 = "param1"
+const val ARG_PARAM2 = "param2"
 
 
 //        val spinnerConcelhos = view.findViewById<Spinner>(R.id.spinner_concelho)
@@ -118,9 +114,6 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
-
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -135,34 +128,15 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
     ): View? {
         // Inflate the layout for this fragment
         val view= inflater.inflate(R.layout.fragment_filtro_produtos, container, false)
-
-
-
-
         spinnerDistritos=view.findViewById<Spinner>(R.id.spinner_distrito) as Spinner
         spinnerConcelhos=view.findViewById<Spinner>(R.id.spinner_concelho) as Spinner
         spinnerCategoria=view.findViewById<Spinner>(R.id.spinner_categorias) as Spinner
         spinnerEtiqueta=view.findViewById<Spinner>(R.id.spinner_etiquetas) as Spinner
         btnFiltrar = view.findViewById<View>(R.id.button_Filtro) as Button
-       //btnFiltrar!!.setOnClickListener { filtrarPesquisaProdutos() }
-//        btnFiltrar!!.setOnClickListener{
-//
-//        }
         spinnerDistritos!!.onItemSelectedListener=this
-
         spinnerDistritos()
         spinnerCategorias()
         spinnerEtiquetas()
-      //  spinnerConcelhos()
-       // chipsEtiquetas(view)
-
-
-
-//        if (dialog != null && dialog?.window != null) {
-//            dialog?.window?.setBackgroundDrawable( ColorDrawable(Color.TRANSPARENT))
-//            dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-//        }
-
         return view
     }
 
@@ -185,58 +159,22 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
         btnFiltrar?.setOnClickListener {
             flag_pesquisa = true
             filtrarPesquisaProdutos()
-            replaceFragment(ListagemProdutosFragment.newInstance())
+            navigateToFragment(ListagemProdutosFragment.newInstance())
+
         }
     }
 
-    private fun replaceFragment(fragment: Fragment) {
+
+
+    private fun navigateToFragment(fragmentToNavigate: Fragment) {
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.nav_host_fragment, fragment)
+        fragmentTransaction.replace(R.id.nav_host_fragment, fragmentToNavigate)
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 
-    @SuppressLint("SetTextI18n")
-    fun chipsEtiquetas(view:View){
-
-        /** implementaçao de chips**/
-        // set the button click listener
-        val btnFiltrarSpinner=   view.findViewById<Spinner>(R.id.spinner_etiquetas)
-        btnFiltrarSpinner.setOnClickListener{
-            // Initialize a new chip instance
-            val chip = Chip(context)
-            chip.text = "Random ${Random.nextInt(100)}"
-
-            // Set the chip icon
-            chip.chipIcon = context?.let { it1 -> ContextCompat.getDrawable(it1,R.drawable.ic_launcher_foreground) }
-            //chip.setChipIconTintResource(R.color.abc_search_url_text)
-
-            // Make the chip clickable
-            chip.isClickable = true
-            chip.isCheckable = false
-
-            // Show the chip icon in chip
-            chip.isCloseIconVisible = true
-
-            // Set the chip click listener
-            chip.setOnClickListener{
-                toast("Clicked: ${chip.text}")
-            }
-
-            // Set chip close icon click listener
-            chip.setOnCloseIconClickListener{
-                // Smoothly remove chip from chip group
-                TransitionManager.beginDelayedTransition(chip_filtro)
-                chip_filtro.removeView(chip)
-            }
-
-            // Finally, add the chip to chip group
-            chip_filtro.addView(chip)
-        }
-
-    }
-
-    fun chipsEtiquetas2(texto:String){
+    fun chipsEtiquetas2(texto: String){
 
         /** implementaçao de chips**/
         // set the button click listener
@@ -246,7 +184,10 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
             chip.text = texto
 
             // Set the chip icon
-            chip.chipIcon = context?.let { it1 -> ContextCompat.getDrawable(it1,R.drawable.ic_launcher_foreground) }
+            chip.chipIcon = context.let { it1 -> ContextCompat.getDrawable(
+                it1,
+                R.drawable.ic_launcher_foreground
+            ) }
             //chip.setChipIconTintResource(R.color.abc_search_url_text)
 
             // Make the chip clickable
@@ -286,18 +227,17 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
 
 
     fun spinnerDistritos(){
-
         //Coloca apenas os distritos com produtos no spinner
+        listaDistritos.clear()
         mLocais.groupBy { it.distrito }.forEach { (name, list) ->
             val existeDistrito= ListagemCategoriasCompleta.find { it.nome == name }
             if(existeDistrito!=null){
-                listaDistritos.add(name)
+                if (name != null) {
+                    listaDistritos.add(name)
+                }
             }
-
         }
-
         // access the spinner
-
         if (spinnerDistritos != null) {
 
             val adapterDistritos = ArrayAdapter(
@@ -320,11 +260,9 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
                         getString(R.string.selected_item) + " " +
                                 "" + listaDistritos[position], Toast.LENGTH_SHORT
                     ).show()
-
                     selectedDistrito = listaDistritos[position]
                     spinnerConcelhos()
                 }
-
                 override fun onNothingSelected(parent: AdapterView<*>) {
                     // write code to perform some action
                 }
@@ -340,13 +278,14 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
 
         listaConcelhos.clear()
 
-
         for (i in 0 until mLocais.size) {
             if (mLocais[i].distrito == selectedDistrito) {
                 val mConcelho = mLocais[i].concelho
                 val existeDistrito= ListagemCategoriasCompleta.find { it.nome == mConcelho }
                 if(existeDistrito!=null){
-                    listaConcelhos.add(mConcelho)
+                    if (mConcelho != null) {
+                        listaConcelhos.add(mConcelho)
+                    }
                 }
 
             }
@@ -361,9 +300,8 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
                 listaConcelhos
             )
             adapterConcelhos.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            adapterConcelhos.notifyDataSetChanged()
-
             spinnerConcelhos!!.adapter = adapterConcelhos
+            adapterConcelhos.notifyDataSetChanged()
 
             spinnerConcelhos!!.onItemSelectedListener = object :
                 AdapterView.OnItemSelectedListener {
@@ -391,9 +329,11 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
     fun spinnerCategorias(){
         /**SPINNER CONCELHOS**/
 
-
+        listaCategorias.clear()
         mCategoria.groupBy { it.nome }.forEach { (name, list) ->
-            listaCategorias.add(name)
+            if (name != null) {
+                listaCategorias.add(name)
+            }
         }
 
         // aceder ao spinner
@@ -434,9 +374,12 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
 
 
     fun spinnerEtiquetas(){
+       // ListagemEtiquetas.clear()
 
         mEtiqueta.groupBy { it.nome }.forEach { (name, list) ->
-            listaEtiquetas.add(name)
+            if (name != null) {
+                listaEtiquetas.add(name)
+            }
         }
         // aceder ao spinner
         if (spinnerEtiqueta != null) {
@@ -446,9 +389,10 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
                 listaEtiquetas
             )
             adapterEtiqueta.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            adapterEtiqueta.notifyDataSetChanged()
+
 
             spinnerEtiqueta!!.adapter = adapterEtiqueta
+            adapterEtiqueta.notifyDataSetChanged()
 
             spinnerEtiqueta!!.onItemSelectedListener = object :
                 AdapterView.OnItemSelectedListener {
@@ -456,7 +400,11 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
                     parent: AdapterView<*>,
                     view: View?, position: Int, id: Long
                 ) {
-                    Toast.makeText( context, getString(R.string.selected_item) + " " +" " + mEtiqueta[position].nome, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        getString(R.string.selected_item) + " " + " " + mEtiqueta[position].nome,
+                        Toast.LENGTH_SHORT
+                    ).show()
                     selectedEtiqueta = getString(R.string.selected_item)
                     chipsEtiquetas2(listaEtiquetas[position])
                 }
@@ -479,7 +427,9 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
         for (i in 0 until ListagemCategoriasCompleta.size) {
             if (ListagemCategoriasCompleta[i].nome == filtraDistrito) {
                  val _filtraDistritoId = ListagemCategoriasCompleta[i].id
+                if (_filtraDistritoId != null) {
                     filtraDistritoId.add(_filtraDistritoId)
+                }
             }
         }
 
@@ -491,7 +441,9 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
                 val _filtraDistritoId = ListagemCategoriasCompleta[i].id
                 val existeDistrito= filtraDistritoId.find { it == _filtraDistritoId }
                 if(existeDistrito==null) {
-                    filtraDistritoId.add(_filtraDistritoId)
+                    if (_filtraDistritoId != null) {
+                        filtraDistritoId.add(_filtraDistritoId)
+                    }
                 }
             }
         }
@@ -520,10 +472,9 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
                 for (ii in 0 until filtraEtiqueta.size) {
                     if (ListagemEtiquetasCompleta[i].nome == filtraEtiqueta[ii]) {
                         val _filtraEtiquetaId = ListagemEtiquetasCompleta[i].id
-                        //  val existeDistrito= filtraDistritoId.find { it == _filtraEtiquetaId }
-                        //  if(existeDistrito==null) {
-                        filtraEtiquetaId.add(_filtraEtiquetaId)
-                        // }
+                        if (_filtraEtiquetaId != null) {
+                            filtraEtiquetaId.add(_filtraEtiquetaId)
+                        }
                     }
                 }
             }
@@ -532,8 +483,11 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
 
 
 
-        val _filtrodistrito=filtraDistritoId.joinToString( prefix = "category=", separator = "&category=")
-        val _filtroetiqueta= filtraEtiquetaId.joinToString( prefix = "tag=", separator = "&tag=")
+        val _filtrodistrito=filtraDistritoId.joinToString(
+            prefix = "category=",
+            separator = "&category="
+        )
+        val _filtroetiqueta= filtraEtiquetaId.joinToString(prefix = "tag=", separator = "&tag=")
         stringPesquisa=""
         stringPesquisa= "$_filtrodistrito&category=$filtraCategoriaId$_filtroetiqueta"
         flag_pesquisa=true
@@ -558,6 +512,62 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
 
 
 
+
+
+
+
 }
 
+/*
+    private fun replaceFragment(fragment: Fragment) {
+        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.nav_host_fragment, fragment)
+        fragmentTransaction.hide(this@FiltroProdutosFragment)
+        fragmentTransaction.addToBackStack(FiltroProdutosFragment::class.java.name)
+        //fragmentTransaction.addToBackStack("cenas")
+        fragmentTransaction.commit()
+    }
+*/
+/*
+    @SuppressLint("SetTextI18n")
+    fun chipsEtiquetas(view: View){
 
+        *//** implementaçao de chips**//*
+        // set the button click listener
+        val btnFiltrarSpinner=   view.findViewById<Spinner>(R.id.spinner_etiquetas)
+        btnFiltrarSpinner.setOnClickListener{
+            // Initialize a new chip instance
+            val chip = Chip(context)
+            chip.text = "Random ${Random.nextInt(100)}"
+
+            // Set the chip icon
+            chip.chipIcon = context.let { it1 -> ContextCompat.getDrawable(
+                it1,
+                R.drawable.ic_launcher_foreground
+            ) }
+            //chip.setChipIconTintResource(R.color.abc_search_url_text)
+
+            // Make the chip clickable
+            chip.isClickable = true
+            chip.isCheckable = false
+
+            // Show the chip icon in chip
+            chip.isCloseIconVisible = true
+
+            // Set the chip click listener
+            chip.setOnClickListener{
+                toast("Clicked: ${chip.text}")
+            }
+
+            // Set chip close icon click listener
+            chip.setOnCloseIconClickListener{
+                // Smoothly remove chip from chip group
+                TransitionManager.beginDelayedTransition(chip_filtro)
+                chip_filtro.removeView(chip)
+            }
+
+            // Finally, add the chip to chip group
+            chip_filtro.addView(chip)
+        }
+
+    }*/

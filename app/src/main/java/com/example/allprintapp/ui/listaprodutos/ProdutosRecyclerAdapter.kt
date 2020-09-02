@@ -17,7 +17,6 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.Constraints.TAG
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.allprintapp.R
@@ -28,8 +27,8 @@ import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Compani
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_PRICE
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_STOCK
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_URL
-import com.example.allprintapp.models.ListagemDistritosModel
-import com.example.allprintapp.models.ListagemProdutosModel
+import com.example.allprintapp.models.DistritosModel
+import com.example.allprintapp.models.ProdutoModel
 import com.example.allprintapp.ui.utils.Utils.Companion.cortaString
 import com.example.loadmoreexample.Constant
 import com.squareup.picasso.Picasso
@@ -37,30 +36,31 @@ import kotlinx.android.synthetic.main.progress_loading.view.*
 
 
 class ProdutosRecyclerAdapter(private val mContext: Context,
-                              private val mProdutosListagemModel: ArrayList<ListagemProdutosModel>) : RecyclerView.Adapter<ProdutosRecyclerAdapter.ProdutosViewHolder>() {
+                              private val mProdutosListagemModel: ArrayList<ProdutoModel>) : RecyclerView.Adapter<ProdutosRecyclerAdapter.ProdutosViewHolder>() {
     //    private var mListener: OnItemClickListener? = null
     private var mListener: OnItemClickListener? = null
     // private var mListaProdutos: ArrayList<ProdutosLista>? = null
-    private var mListagemDistritos: java.util.ArrayList<ListagemDistritosModel>?=null
+    private var mDistritos: java.util.ArrayList<DistritosModel>?=null
 
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     interface OnItemClickListener {
+
         fun onItemClick(position: Int)
         fun recreate()
 
     }
 
 
-    fun addData(dataViews: ArrayList<ListagemProdutosModel>) {
+    fun addData(dataViews: ArrayList<ProdutoModel>) {
         this.mProdutosListagemModel.addAll(dataViews)
         notifyDataSetChanged()
     }
 
 
-    fun getItemAtPosition(position: Int): ListagemProdutosModel? {
+    fun getItemAtPosition(position: Int): ProdutoModel? {
         return mProdutosListagemModel[position]
     }
 
@@ -116,7 +116,7 @@ class ProdutosRecyclerAdapter(private val mContext: Context,
             val currentItem = mProdutosListagemModel[position]
             //val currentPlace = mListagemDistritos[position]
 
-            val id = cortaString(currentItem.id,"_")
+            val id = currentItem.id?.let { cortaString(it,"_") }
             val nome = currentItem.nome
             val preco = currentItem.preco
             //val category = currentItem.category
@@ -139,11 +139,12 @@ class ProdutosRecyclerAdapter(private val mContext: Context,
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (mProdutosListagemModel[position] == null) {
+        return Constant.VIEW_TYPE_ITEM
+        /*        return if (mProdutosListagemModel[position] == null) {
             Constant.VIEW_TYPE_LOADING
         } else {
             Constant.VIEW_TYPE_ITEM
-        }
+        }*/
     }
 
     inner class ProdutosViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

@@ -11,14 +11,34 @@
         android:id="@+id/nav_home"
         android:name="com.example.allprintapp.ui.home.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_nav_home_to_nav_pesquisa"
+            app:destination="@id/nav_pesquisa" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_categorias"
+            app:destination="@id/nav_categorias" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_loja"
+            app:destination="@id/nav_loja" />
+        <action
+            android:id="@+id/action_nav_home_pop"
+            app:enterAnim="@anim/fragment_close_enter"
+            app:exitAnim="@anim/fragment_close_enter"
+            app:popUpTo="@id/nav_home"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 
     <fragment
         android:id="@+id/nav_loja"
         android:name="com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment"
         android:label="@string/menu_loja"
-        tools:layout="@layout/fragment_listagem_produtos_recyclerview" />
+        tools:layout="@layout/fragment_listagem_produtos_recyclerview" >
+        <action
+            android:id="@+id/action_nav_loja_to_nav_pesquisa"
+            app:destination="@id/nav_pesquisa" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_pesquisa"
@@ -27,12 +47,18 @@
         tools:layout="@layout/fragment_filtro_produtos" >
         <action
             android:id="@+id/action_nav_pesquisa_to_nav_loja"
-            app:destination="@id/nav_loja" />
+            app:destination="@id/nav_loja"
+            app:popUpTo="@id/nav_loja" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_categorias"
         android:name="com.example.allprintapp.ui.listacategorias.ListaCategoriasFragment"
         android:label="@string/menu_categorias" />
+
+    <activity
+        android:id="@+id/nav_logout"
+        android:name="com.example.allprintapp.LoginActivity"
+        android:label="LoginActivity" />
 
 </navigation>

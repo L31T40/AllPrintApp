@@ -22,14 +22,20 @@
             android:id="@+id/nav_pesquisa"
             android:icon="?android:attr/actionModeWebSearchDrawable"
             android:title="@string/menu_pesquisa" />
-
-        <item android:title="@string/defnicoes">
-            <menu>
+        <item android:title=""/>
         <item
             android:id="@+id/nav_logout"
             android:icon="@android:drawable/ic_lock_power_off"
             android:title="@string/menu_logout" />
+
+
+       <!-- <item android:title="@string/definicoes">
+            <menu>
+        <item
+            android:id="@+id/nav_logout1"
+            android:icon="@android:drawable/ic_lock_power_off"
+            android:title="@string/menu_logout" />
             </menu>
-        </item>
+        </item>-->
     </group>
 </menu>

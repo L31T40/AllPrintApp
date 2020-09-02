@@ -38,24 +38,24 @@
 
 
         <TextView
-            android:id="@+id/textViewConcelhoDetalhes"
+            android:id="@+id/textViewDistritoDetalhes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="2dp"
-            android:text="Distrito"
+            android:text="Lisboa"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textViewDistritoDetalhes"
+            android:id="@+id/textViewConcelhoDetalhes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="2dp"
-            android:text="Concelho"
+            android:text="Lisboa"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="18sp"

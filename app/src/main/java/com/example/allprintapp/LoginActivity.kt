@@ -42,15 +42,17 @@ class LoginActivity : AppCompatActivity() {
     private var preferenceHelper: PreferenceHelper? = null
     private var mProgressView: View? = null
     private var mLoginFormView: View? = null
-    private var mListagemDistritos: ArrayList<ListagemDistritosModel>? = null
+    private var mDistritos: ArrayList<DistritosModel>? = null
     companion object {
-        var ListagemDistritos = ArrayList<ListagemDistritosModel>()
+        var ListagemDistritos = ArrayList<DistritosModel>()
         var ListagemCategorias = ArrayList<ListaCategoriasModel>()
         var ListagemCategoriasCompleta = ArrayList<ListaCategoriasCompletaModel>()
-        var ListagemEtiquetas = ArrayList<ListaEtiquetasModel>()
-        var ListagemEtiquetasCompleta = ArrayList<ListaEtiquetasCompletaModel>()
+        var ListagemEtiquetas = ArrayList<EtiquetasModel>()
+        var ListagemEtiquetasCompleta = ArrayList<EtiquetasCompletaModel>()
+        var navigateToResults: Boolean = false
         // var ListagemCategorias :  HashMap<Int,String> = HashMap()
-
+        //var token: String = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiN2ViYTk4YmI3YTk4OWI2NjI1YThkZjAyOTA3MWMxZTI3NzZkY2UzNmRlZmM1ZGE5Nzk0MjliMTNhNGUzN2RjODFiODkwOGNlYzNjY2M5YjgiLCJpYXQiOjE1OTM2Mzc4ODYsIm5iZiI6MTU5MzYzNzg4NiwiZXhwIjoxNjI1MTczODg2LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.F5RId5LSLp19uFpxXrpU2KG1dvvE9so9NFc_HTrPCsUrg-ObcHh4tJ1RRtURcMx4qmoZ0z4tk9bfGGB9TM2DjsT2tfDDokqiGdTYdboHmqkSlGKTMFZ897CFtYBlK_ETn4Cj4HoE3bG0djTHftuutXvZYzMhuWXGILkY3dfSQP2PQRwDY2CHBwAtc9CMveIdyAYE9liYF9MyjK4-pnLJvNiI5fxQvpfWBjague_-ffmFsmvqO4UjUfpZVKkLK-RjWdHtYl2EyXOejT6O4pJMANahVXJPPC97fKzKfU9pOMIVK1mMnv6TKpvz9smq7Hdg2XUjuRJ6FEHOBp3-qtX_FIGYSzQAhBlD4ITpi8jAFN4BMV-rxTs9kaxSLu_TT7OIw9JWfm40z9foBvgeDrlOYmTG1q4GI5BwteQ_31TngFkY8vDzeDxr8HBpFEogw1aAvHBJifARzR7t48FG3J9EENNGDG1LddvRgMB3a-55TQJlho6MGXodT3LRGLXoikySHjPcDEl9PbncUnkKvPh97IcdCg1OkwTnbZkgj4zyAdafjhW7vtwS9D-FIdN0g8vJHS7pSvFThtLfqCHwUuCS-Bz6cx-r1mUuUEidmz3w94clBE9EG2ZvToLmqDLy93hOM6raU6NdIlCVhnQ-fjMogknvtA7qEm5cdC8I3pQlCGw"
+        var token: String = ""
 
         //var ListagemEtiquetas :   HashMap<Int,String> = HashMap()
 
@@ -71,22 +73,52 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
+    private fun loginUser1() {
+        val email = etEmail!!.text.toString().trim { it <= ' ' }
+        val password = etPass!!.text.toString().trim { it <= ' ' }
+        mDistritos = ArrayList()
+        val retrofit = Retrofit.Builder()
+            .baseUrl(LoginInterface.LOGINURL)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+        val api = retrofit.create(LoginInterface::class.java)
+        val call = api.getUserLogin(email, password)
+        showProgress(true)
+        if (call != null) {
+            call.enqueue(object : Callback<String?>{
+                override fun onResponse(call: Call<String?>, response: Response<String?>) {
+                    Log.i("string de resposta -> ", response.body().toString())
+                    if (response.isSuccessful) {
+                        if (response.body() != null) {
+                            Log.i("onSuccess", response.body().toString())
+                            val jsonresponse = response.body().toString()
+                            parseLoginData(jsonresponse)
+                            mDistritos = ArrayList()
+                            getJSONListagemDistritos()
+                            DoAsync {
+                                getJSONListagemCategorias()
+                            }.execute()
+                        } else {
+                            Log.i("onEmptyResponse", "Não Devolveu resposta")
+                        }
+                    }
+                }
+                override fun onFailure(call: Call<String?>, t: Throwable) {}
+            })
+        }
+    }
+
     private fun loginUser() {
 //        val email = etEmail!!.text.toString().trim { it <= ' ' }
 //        val password = etPass!!.text.toString().trim { it <= ' ' }
         val email = "cenas@cenas.pt"
         val password = "12345"
-
-        /************************/
-        mListagemDistritos = ArrayList()
-        /************************/
+        mDistritos = ArrayList()
         val retrofit = Retrofit.Builder()
             .baseUrl(LoginInterface.LOGINURL)
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
-
         val api = retrofit.create(LoginInterface::class.java)
-
         val call = api.getUserLogin(email, password)
         showProgress(true)
         if (call != null) {
@@ -94,44 +126,34 @@ class LoginActivity : AppCompatActivity() {
                 //  call!!.enqueue(object : Callback<String?> {
                 override fun onResponse(call: Call<String?>, response: Response<String?>) {
                     Log.i("Response string -> ", response.body().toString())
-                    //Toast.makeText()
                     if (response.isSuccessful) {
                         if (response.body() != null) {
-
                             Log.i("onSuccess", response.body().toString())
                             val jsonresponse = response.body().toString()
                             parseLoginData(jsonresponse)
-                            //Toast.makeText(this@LoginActivity, "ENTROU"+response.body().toString(), Toast.LENGTH_LONG).show()
-
-                            // lança o spinner de progresso e ao mesmo tempo a asynctask de login
-                            /************************************************************/
-                            mListagemDistritos = ArrayList()
-
+                            mDistritos = ArrayList()
                             getJSONListagemDistritos()
                             DoAsync {
                                 getJSONListagemCategorias()
-
                             }.execute()
-                            /************************************************************/
-
                         } else {
-                            Log.i("onEmptyResponse", "Não Devolveu resposta") //Toast.makeText(getContext(),"Nothing returned",Toast.LENGTH_LONG).show();
+                            Log.i("onEmptyResponse", "Não Devolveu resposta")
                         }
                     }
                 }
-
                 override fun onFailure(call: Call<String?>, t: Throwable) {}
             })
         }
     }
 
-
     private fun parseLoginData(response: String) {
+
         try {
             val jsonObject = JSONObject(response)
             if (jsonObject.has("success")) {//if (jsonObject.getString("status") == "true") {
+                token=jsonObject.getJSONObject("success").getString("token")
                 saveInfo(response)
-                Toast.makeText(this@LoginActivity,"LOGIN SUCESSO", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@LoginActivity,"Bem Vindo", Toast.LENGTH_LONG).show()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
@@ -141,6 +163,7 @@ class LoginActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
+
 
     private fun saveInfo(response: String) {
         preferenceHelper!!.putIsLogin(true)
@@ -182,7 +205,7 @@ class LoginActivity : AppCompatActivity() {
                     // Log.i(ContentValues.TAG, "+==========================Prefixo -> $prefixo")
                     try {
                         ListagemDistritos.add(
-                            ListagemDistritosModel(
+                            DistritosModel(
                                 idDistrito,
                                 distrito,
                                 idConcelho,
@@ -223,9 +246,6 @@ class LoginActivity : AppCompatActivity() {
 
 
     private fun getJSONListagemCategorias() {
-
-        val token =
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiN2ViYTk4YmI3YTk4OWI2NjI1YThkZjAyOTA3MWMxZTI3NzZkY2UzNmRlZmM1ZGE5Nzk0MjliMTNhNGUzN2RjODFiODkwOGNlYzNjY2M5YjgiLCJpYXQiOjE1OTM2Mzc4ODYsIm5iZiI6MTU5MzYzNzg4NiwiZXhwIjoxNjI1MTczODg2LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.F5RId5LSLp19uFpxXrpU2KG1dvvE9so9NFc_HTrPCsUrg-ObcHh4tJ1RRtURcMx4qmoZ0z4tk9bfGGB9TM2DjsT2tfDDokqiGdTYdboHmqkSlGKTMFZ897CFtYBlK_ETn4Cj4HoE3bG0djTHftuutXvZYzMhuWXGILkY3dfSQP2PQRwDY2CHBwAtc9CMveIdyAYE9liYF9MyjK4-pnLJvNiI5fxQvpfWBjague_-ffmFsmvqO4UjUfpZVKkLK-RjWdHtYl2EyXOejT6O4pJMANahVXJPPC97fKzKfU9pOMIVK1mMnv6TKpvz9smq7Hdg2XUjuRJ6FEHOBp3-qtX_FIGYSzQAhBlD4ITpi8jAFN4BMV-rxTs9kaxSLu_TT7OIw9JWfm40z9foBvgeDrlOYmTG1q4GI5BwteQ_31TngFkY8vDzeDxr8HBpFEogw1aAvHBJifARzR7t48FG3J9EENNGDG1LddvRgMB3a-55TQJlho6MGXodT3LRGLXoikySHjPcDEl9PbncUnkKvPh97IcdCg1OkwTnbZkgj4zyAdafjhW7vtwS9D-FIdN0g8vJHS7pSvFThtLfqCHwUuCS-Bz6cx-r1mUuUEidmz3w94clBE9EG2ZvToLmqDLy93hOM6raU6NdIlCVhnQ-fjMogknvtA7qEm5cdC8I3pQlCGw"
         val url = "http://middleware.allprint.pt/api/categorias"
         val requestQueue = Volley.newRequestQueue(this)
         Log.i(ContentValues.TAG, "+========================== URL $url")
@@ -237,21 +257,17 @@ class LoginActivity : AppCompatActivity() {
                         val hit = jsonArray.getJSONObject(i)
                         val categoriaId = hit.getString("id")
                         val categoria = hit.getString("name")
-//                            ListagemCategorias!!.add(categoria)
-//                            Log.i(ContentValues.TAG, "+=========== Categorias $categoria")
                         // verifica se a categoria ja existe nos distritos, concelhos ou no Array e nao adiciona à lista
                         val existeDistrito= ListagemDistritos.find { it.distrito == categoria }
                         val existeConcelho= ListagemDistritos.find { it.concelho == categoria }
-
-                        ListagemCategoriasCompleta!!.add(
+                        ListagemCategoriasCompleta.add(
                             ListaCategoriasCompletaModel(
                                 categoriaId,
                                 categoria
                             )
                         )
-
                         if ((ListagemCategorias.find { it.nome == categoria  }==null)&&(existeDistrito==null||existeConcelho==null )) {
-                            ListagemCategorias!!.add(
+                            ListagemCategorias.add(
                                 ListaCategoriasModel(
                                     categoriaId,
                                     categoria
@@ -267,8 +283,6 @@ class LoginActivity : AppCompatActivity() {
                 getJSONListagemEtiquetas()
                 //Toast.makeText(context, response, Toast.LENGTH_LONG).show()
             }, com.android.volley.Response.ErrorListener { volleyerror ->
-                /*progressDialog.dismiss()*/
-
                 Toast.makeText(applicationContext, volleyerror.message, Toast.LENGTH_LONG).show()
             }) {
                 @Throws(AuthFailureError::class)
@@ -293,15 +307,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun getJSONListagemEtiquetas() {
-
-
-
-        val token =
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiN2ViYTk4YmI3YTk4OWI2NjI1YThkZjAyOTA3MWMxZTI3NzZkY2UzNmRlZmM1ZGE5Nzk0MjliMTNhNGUzN2RjODFiODkwOGNlYzNjY2M5YjgiLCJpYXQiOjE1OTM2Mzc4ODYsIm5iZiI6MTU5MzYzNzg4NiwiZXhwIjoxNjI1MTczODg2LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.F5RId5LSLp19uFpxXrpU2KG1dvvE9so9NFc_HTrPCsUrg-ObcHh4tJ1RRtURcMx4qmoZ0z4tk9bfGGB9TM2DjsT2tfDDokqiGdTYdboHmqkSlGKTMFZ897CFtYBlK_ETn4Cj4HoE3bG0djTHftuutXvZYzMhuWXGILkY3dfSQP2PQRwDY2CHBwAtc9CMveIdyAYE9liYF9MyjK4-pnLJvNiI5fxQvpfWBjague_-ffmFsmvqO4UjUfpZVKkLK-RjWdHtYl2EyXOejT6O4pJMANahVXJPPC97fKzKfU9pOMIVK1mMnv6TKpvz9smq7Hdg2XUjuRJ6FEHOBp3-qtX_FIGYSzQAhBlD4ITpi8jAFN4BMV-rxTs9kaxSLu_TT7OIw9JWfm40z9foBvgeDrlOYmTG1q4GI5BwteQ_31TngFkY8vDzeDxr8HBpFEogw1aAvHBJifARzR7t48FG3J9EENNGDG1LddvRgMB3a-55TQJlho6MGXodT3LRGLXoikySHjPcDEl9PbncUnkKvPh97IcdCg1OkwTnbZkgj4zyAdafjhW7vtwS9D-FIdN0g8vJHS7pSvFThtLfqCHwUuCS-Bz6cx-r1mUuUEidmz3w94clBE9EG2ZvToLmqDLy93hOM6raU6NdIlCVhnQ-fjMogknvtA7qEm5cdC8I3pQlCGw"
         val url = "http://middleware.allprint.pt/api/etiquetas"
         val requestQueue = Volley.newRequestQueue(this)
-
-
         Log.i(ContentValues.TAG, "+========================== URL $url")
         val stringRequest: StringRequest =
             object : StringRequest(Method.POST, url, com.android.volley.Response.Listener { response ->
@@ -312,20 +319,20 @@ class LoginActivity : AppCompatActivity() {
                         val etiquetaId = hit.getString("id")
                         val etiqueta = hit.getString("name")
 
-                        ListagemEtiquetasCompleta!!.add(
-                            ListaEtiquetasCompletaModel(
+                        ListagemEtiquetasCompleta.add(
+                            EtiquetasCompletaModel(
                                 etiquetaId,
                                 etiqueta
                             )
                         )
-//                        ListagemEtiquetas!!.add(etiqueta)
-//                        Log.i(ContentValues.TAG, "+=========== Etiquetas $etiqueta")
                         // verifica se a categoria ja existe nos distritos, concelhos ou no Array e nao adiciona à lista
                         val existeDistrito= ListagemDistritos.find { it.distrito == etiqueta }
                         val existeConcelho= ListagemDistritos.find { it.concelho == etiqueta }
-                        if (((ListagemEtiquetas.find { it.nome == etiqueta  }==null) && (ListagemCategorias.find { it.nome == etiqueta  }==null)) && (existeDistrito==null || existeConcelho==null )) {
-                            ListagemEtiquetas!!.add(
-                                ListaEtiquetasModel(
+                        val existeCategoria= ListagemCategorias.find { it.nome == etiqueta  }
+                        val existeEtiqueta= ListagemEtiquetas.find { it.nome == etiqueta }
+                        if ((existeCategoria==null && existeEtiqueta==null) && (existeDistrito==null && existeConcelho==null )) {
+                            ListagemEtiquetas.add(
+                                EtiquetasModel(
                                     etiquetaId,
                                     etiqueta
                                 )

@@ -10,7 +10,7 @@
     android:paddingLeft="50dp"
     android:paddingRight="50dp"
     android:theme="@style/Theme.AppCompat.NoActionBar"
-    tools:context=".MainActivity">
+    tools:context=".LoginActivity">
 
 
     <ProgressBar

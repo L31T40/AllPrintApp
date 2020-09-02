@@ -10,9 +10,9 @@ import android.os.Handler
 import android.util.Log
 import android.view.*
 import android.widget.Toast
-import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.AuthFailureError
@@ -22,11 +22,16 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.allprintapp.LoginActivity.Companion.ListagemDistritos
-import com.example.allprintapp.MainActivity
+import com.example.allprintapp.LoginActivity.Companion.token
 import com.example.allprintapp.R
-import com.example.allprintapp.models.ListagemDistritosModel
-import com.example.allprintapp.models.ListagemProdutosModel
+import com.example.allprintapp.carrinho.CartItem
+import com.example.allprintapp.carrinho.ShoppingCartFragment
+import com.example.allprintapp.models.DistritosModel
+import com.example.allprintapp.models.ProdutoModel
 import com.example.allprintapp.ui.filtrosprodutos.FiltroProdutosFragment.Companion.stringPesquisa
+import com.example.allprintapp.ui.utils.Utils.Companion.minhaTosta
+import com.example.ethieladiassa.shoppingcart.ShoppingCart
+import io.paperdb.Paper
 import kotlinx.android.synthetic.main.fragment_listagem_produtos_recyclerview.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -49,14 +54,13 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
 
     private var pDialog: ProgressDialog? = null
 
+    var mModelProdutoCart: ArrayList<CartItem>? = null
     var mRecyclerView: RecyclerView? = null
-
-    //    private var mExampleAdapter: ExampleAdapter? = null
     var mProdutosAdapter: ProdutosRecyclerAdapter? = null
 
     //    private var mExampleList: ArrayList<ExampleItem>? = null
-    var mModelProdutoListagens: ArrayList<ListagemProdutosModel>? = null
-    var mListagemDistritos: ArrayList<ListagemDistritosModel>? = null
+    var mModelProdutoListagens: ArrayList<ProdutoModel>? = null
+    var mDistritos: ArrayList<DistritosModel>? = null
     var mRequestQueue: RequestQueue? = null
     var mRequestQueueDistritos: RequestQueue? = null
     var requestQueue: RequestQueue? = null
@@ -75,11 +79,12 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
 
 
 
-//        fun newInstance(): Fragment {
-//            TODO("Not yet implemented")
-//        }
+        fun newInstance(): Fragment {
+            return ListagemProdutosFragment()
+            TODO("Not yet implemented")
+        }
 
-          fun newInstance() = ListagemProdutosFragment()
+       //   fun newInstance() = ListagemProdutosFragment()
 
 
         // TODO: Customize parameter argument names
@@ -138,14 +143,16 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
         val view =
             inflater.inflate(R.layout.fragment_listagem_produtos_recyclerview, container, false)
         val coisas = ListagemDistritos
-        val cenas = mListagemDistritos?.get(1)
+        val cenas = mDistritos?.get(1)
         val coisas1 = coisas[1]
+        Paper.init(mContext)
 
         // This callback will only be called when MyFragment is at least Started.
 //        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
 //            // Handle the back button even
 //            fragmentManager?.popBackStack()
 //        }
+
 
         return view
 
@@ -157,12 +164,21 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
         // Handle item selection
 
         return when (item.itemId) {
-            R.id.menu_filtrar-> {
+            R.id.menu_filtrar -> {
                 menuFiltrarProdutos()
                 true
             }
-            R.id.menu_pesquisa -> {
-                Toast.makeText(context, "PESQIISARRRR!", Toast.LENGTH_SHORT).show()
+            R.id.menu_carrinho -> {
+                //navigateToFragment(ShoppingCartFragment.newInstance())
+                val x = ShoppingCart.getShoppingCartSize()
+                if (ShoppingCart.getShoppingCartSize() <= 0) {
+                    minhaTosta(mContext, R.drawable.ic_seta1, "O Carrinho de Compras está Vazio!", "long", "erro")
+                        .show()
+
+                    Toast.makeText(context, "O Carrinho de Compras está Vazio!", Toast.LENGTH_LONG).show()
+                } else {
+                    navigateToFragment(ShoppingCartFragment.newInstance())
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -171,7 +187,13 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
 
 
 
-
+    private fun navigateToFragment(fragmentToNavigate: Fragment) {
+        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.nav_host_fragment, fragmentToNavigate)
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
+    }
 
      fun menuFiltrarProdutos() {
 
@@ -208,6 +230,7 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
 
         setRVScrollListener()
     }
+
 
 
 
@@ -252,18 +275,15 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
         recycler_view_lista_produtos.addOnScrollListener(scrollListener)
     }
 
-    //Faz o parse do JSON de informção dos produtos através do middleware usando um token OAUTH2
+    //Faz o parse do JSON de informção dos produtos através do middleware usando um token recebido pelo protocolo OAUTH2
     fun getDataProdutos(pag: String) {
         var url: String? = null
-        val token =
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiN2ViYTk4YmI3YTk4OWI2NjI1YThkZjAyOTA3MWMxZTI3NzZkY2UzNmRlZmM1ZGE5Nzk0MjliMTNhNGUzN2RjODFiODkwOGNlYzNjY2M5YjgiLCJpYXQiOjE1OTM2Mzc4ODYsIm5iZiI6MTU5MzYzNzg4NiwiZXhwIjoxNjI1MTczODg2LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.F5RId5LSLp19uFpxXrpU2KG1dvvE9so9NFc_HTrPCsUrg-ObcHh4tJ1RRtURcMx4qmoZ0z4tk9bfGGB9TM2DjsT2tfDDokqiGdTYdboHmqkSlGKTMFZ897CFtYBlK_ETn4Cj4HoE3bG0djTHftuutXvZYzMhuWXGILkY3dfSQP2PQRwDY2CHBwAtc9CMveIdyAYE9liYF9MyjK4-pnLJvNiI5fxQvpfWBjague_-ffmFsmvqO4UjUfpZVKkLK-RjWdHtYl2EyXOejT6O4pJMANahVXJPPC97fKzKfU9pOMIVK1mMnv6TKpvz9smq7Hdg2XUjuRJ6FEHOBp3-qtX_FIGYSzQAhBlD4ITpi8jAFN4BMV-rxTs9kaxSLu_TT7OIw9JWfm40z9foBvgeDrlOYmTG1q4GI5BwteQ_31TngFkY8vDzeDxr8HBpFEogw1aAvHBJifARzR7t48FG3J9EENNGDG1LddvRgMB3a-55TQJlho6MGXodT3LRGLXoikySHjPcDEl9PbncUnkKvPh97IcdCg1OkwTnbZkgj4zyAdafjhW7vtwS9D-FIdN0g8vJHS7pSvFThtLfqCHwUuCS-Bz6cx-r1mUuUEidmz3w94clBE9EG2ZvToLmqDLy93hOM6raU6NdIlCVhnQ-fjMogknvtA7qEm5cdC8I3pQlCGw"
+       // url = "https://middleware.allprint.pt/api/produtosfiltro/$stringPesquisa"
         if (flag_pesquisa){
-            url = "https://middleware.allprint.pt/api/produtosfiltro/$stringPesquisa"}
+            url = "https://middleware.allprint.pt/api/produtosfiltro/$stringPesquisa"
+            flag_pesquisa=false}
         else{
             url = "https://middleware.allprint.pt/api/produtos/$pag" }
-
-
-
         Log.i(ContentValues.TAG, "+========================== URL $url")
         val stringRequest: StringRequest =
             object : StringRequest(Method.POST, url, Response.Listener { response ->
@@ -279,7 +299,7 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
                         val stockqt = hit.getString("stock_quantity")
                         val imageUrl = hit.getString("image")
                         mModelProdutoListagens!!.add(
-                            ListagemProdutosModel(
+                            ProdutoModel(
                                 id,
                                 nome,
                                 preco,
@@ -325,74 +345,6 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
     }
 
 
-    //Faz o parse do JSON de informção dos produtos através do middleware usando um token OAUTH2
-    fun getDataProdutosFiltro() {
-        val token =
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiN2ViYTk4YmI3YTk4OWI2NjI1YThkZjAyOTA3MWMxZTI3NzZkY2UzNmRlZmM1ZGE5Nzk0MjliMTNhNGUzN2RjODFiODkwOGNlYzNjY2M5YjgiLCJpYXQiOjE1OTM2Mzc4ODYsIm5iZiI6MTU5MzYzNzg4NiwiZXhwIjoxNjI1MTczODg2LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.F5RId5LSLp19uFpxXrpU2KG1dvvE9so9NFc_HTrPCsUrg-ObcHh4tJ1RRtURcMx4qmoZ0z4tk9bfGGB9TM2DjsT2tfDDokqiGdTYdboHmqkSlGKTMFZ897CFtYBlK_ETn4Cj4HoE3bG0djTHftuutXvZYzMhuWXGILkY3dfSQP2PQRwDY2CHBwAtc9CMveIdyAYE9liYF9MyjK4-pnLJvNiI5fxQvpfWBjague_-ffmFsmvqO4UjUfpZVKkLK-RjWdHtYl2EyXOejT6O4pJMANahVXJPPC97fKzKfU9pOMIVK1mMnv6TKpvz9smq7Hdg2XUjuRJ6FEHOBp3-qtX_FIGYSzQAhBlD4ITpi8jAFN4BMV-rxTs9kaxSLu_TT7OIw9JWfm40z9foBvgeDrlOYmTG1q4GI5BwteQ_31TngFkY8vDzeDxr8HBpFEogw1aAvHBJifARzR7t48FG3J9EENNGDG1LddvRgMB3a-55TQJlho6MGXodT3LRGLXoikySHjPcDEl9PbncUnkKvPh97IcdCg1OkwTnbZkgj4zyAdafjhW7vtwS9D-FIdN0g8vJHS7pSvFThtLfqCHwUuCS-Bz6cx-r1mUuUEidmz3w94clBE9EG2ZvToLmqDLy93hOM6raU6NdIlCVhnQ-fjMogknvtA7qEm5cdC8I3pQlCGw"
-
-
-
-        val url = "https://middleware.allprint.pt/api/produtos/$stringPesquisa"
-
-        Log.i(ContentValues.TAG, "+========================== URL $url")
-        val stringRequest: StringRequest =
-            object : StringRequest(Method.POST, url, Response.Listener { response ->
-                try {
-                    val jsonArray = JSONArray(response)
-                    for (i in 0 until jsonArray.length()) {
-                        val hit = jsonArray.getJSONObject(i)
-                        val id = hit.getString("id")
-                        val nome = hit.getString("name")
-                        val preco = hit.getString("price")
-                        val descricao = hit.getString("description")
-                        val descricaocurta = hit.getString("short_description")
-                        val stockqt = hit.getString("stock_quantity")
-                        val imageUrl = hit.getString("image")
-                        mModelProdutoListagens!!.add(
-                            ListagemProdutosModel(
-                                id,
-                                nome,
-                                preco,
-                                descricao,
-                                descricaocurta,
-                                stockqt,
-                                imageUrl
-                            )
-                        )
-                    }
-
-                    //loadRecyclerView()
-                    setAdapter()
-                    setRVLayoutManager()
-
-
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-                //Toast.makeText(context, response, Toast.LENGTH_LONG).show()
-            }, Response.ErrorListener { volleyerror ->
-                /*progressDialog.dismiss()*/
-
-                Toast.makeText(context, volleyerror.message, Toast.LENGTH_LONG).show()
-            }) {
-                @Throws(AuthFailureError::class)
-                override fun getHeaders(): Map<String, String>? {
-                    val headers: MutableMap<String, String> = HashMap()
-                    val auth = "Bearer $token"
-                    headers["Authorization"] = auth
-                    headers["Content-Type"] = "application/x-www-form-urlencoded"
-                    headers["Accept"] = "application/json"
-                    return headers
-                }
-            }
-        stringRequest.retryPolicy = DefaultRetryPolicy(
-            DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2,
-            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        )
-        mRequestQueue!!.add(stringRequest)
-
-    }
 
 
 
@@ -441,7 +393,78 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
         TODO("Not yet implemented")
     }
 
-
 }
 
+/*
 
+    //Faz o parse do JSON de informção dos produtos através do middleware usando um token OAUTH2
+    fun getDataProdutosFiltro() {
+        val token =
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiN2ViYTk4YmI3YTk4OWI2NjI1YThkZjAyOTA3MWMxZTI3NzZkY2UzNmRlZmM1ZGE5Nzk0MjliMTNhNGUzN2RjODFiODkwOGNlYzNjY2M5YjgiLCJpYXQiOjE1OTM2Mzc4ODYsIm5iZiI6MTU5MzYzNzg4NiwiZXhwIjoxNjI1MTczODg2LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.F5RId5LSLp19uFpxXrpU2KG1dvvE9so9NFc_HTrPCsUrg-ObcHh4tJ1RRtURcMx4qmoZ0z4tk9bfGGB9TM2DjsT2tfDDokqiGdTYdboHmqkSlGKTMFZ897CFtYBlK_ETn4Cj4HoE3bG0djTHftuutXvZYzMhuWXGILkY3dfSQP2PQRwDY2CHBwAtc9CMveIdyAYE9liYF9MyjK4-pnLJvNiI5fxQvpfWBjague_-ffmFsmvqO4UjUfpZVKkLK-RjWdHtYl2EyXOejT6O4pJMANahVXJPPC97fKzKfU9pOMIVK1mMnv6TKpvz9smq7Hdg2XUjuRJ6FEHOBp3-qtX_FIGYSzQAhBlD4ITpi8jAFN4BMV-rxTs9kaxSLu_TT7OIw9JWfm40z9foBvgeDrlOYmTG1q4GI5BwteQ_31TngFkY8vDzeDxr8HBpFEogw1aAvHBJifARzR7t48FG3J9EENNGDG1LddvRgMB3a-55TQJlho6MGXodT3LRGLXoikySHjPcDEl9PbncUnkKvPh97IcdCg1OkwTnbZkgj4zyAdafjhW7vtwS9D-FIdN0g8vJHS7pSvFThtLfqCHwUuCS-Bz6cx-r1mUuUEidmz3w94clBE9EG2ZvToLmqDLy93hOM6raU6NdIlCVhnQ-fjMogknvtA7qEm5cdC8I3pQlCGw"
+
+
+
+        val url = "https://middleware.allprint.pt/api/produtos/$stringPesquisa"
+
+        Log.i(ContentValues.TAG, "+========================== URL $url")
+        val stringRequest: StringRequest =
+            object : StringRequest(Method.POST, url, Response.Listener { response ->
+                try {
+                    val jsonArray = JSONArray(response)
+                    for (i in 0 until jsonArray.length()) {
+                        val hit = jsonArray.getJSONObject(i)
+                        val id = hit.getString("id")
+                        val nome = hit.getString("name")
+                        val preco = hit.getString("price")
+                        val descricao = hit.getString("description")
+                        val descricaocurta = hit.getString("short_description")
+                        val stockqt = hit.getString("stock_quantity")
+                        val imageUrl = hit.getString("image")
+                        mModelProdutoListagens!!.add(
+                            ProdutoModel(
+                                id,
+                                nome,
+                                preco,
+                                descricao,
+                                descricaocurta,
+                                stockqt,
+                                imageUrl
+                            )
+                        )
+                    }
+
+                    //loadRecyclerView()
+                    setAdapter()
+                    setRVLayoutManager()
+
+
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+                //Toast.makeText(context, response, Toast.LENGTH_LONG).show()
+            }, Response.ErrorListener { volleyerror ->
+                */
+/*progressDialog.dismiss()*//*
+
+
+                Toast.makeText(context, volleyerror.message, Toast.LENGTH_LONG).show()
+            }) {
+                @Throws(AuthFailureError::class)
+                override fun getHeaders(): Map<String, String>? {
+                    val headers: MutableMap<String, String> = HashMap()
+                    val auth = "Bearer $token"
+                    headers["Authorization"] = auth
+                    headers["Content-Type"] = "application/x-www-form-urlencoded"
+                    headers["Accept"] = "application/json"
+                    return headers
+                }
+            }
+        stringRequest.retryPolicy = DefaultRetryPolicy(
+            DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 2,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+        mRequestQueue!!.add(stringRequest)
+
+    }
+*/
