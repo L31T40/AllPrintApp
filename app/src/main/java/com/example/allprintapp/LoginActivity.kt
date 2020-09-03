@@ -19,6 +19,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.allprintapp.Login.PreferenceHelper
 import com.example.allprintapp.models.*
+import com.example.allprintapp.ui.utils.Utils
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -51,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
         var ListagemEtiquetasCompleta = ArrayList<EtiquetasCompletaModel>()
         var navigateToResults: Boolean = false
         // var ListagemCategorias :  HashMap<Int,String> = HashMap()
-        //var token: String = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiN2ViYTk4YmI3YTk4OWI2NjI1YThkZjAyOTA3MWMxZTI3NzZkY2UzNmRlZmM1ZGE5Nzk0MjliMTNhNGUzN2RjODFiODkwOGNlYzNjY2M5YjgiLCJpYXQiOjE1OTM2Mzc4ODYsIm5iZiI6MTU5MzYzNzg4NiwiZXhwIjoxNjI1MTczODg2LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.F5RId5LSLp19uFpxXrpU2KG1dvvE9so9NFc_HTrPCsUrg-ObcHh4tJ1RRtURcMx4qmoZ0z4tk9bfGGB9TM2DjsT2tfDDokqiGdTYdboHmqkSlGKTMFZ897CFtYBlK_ETn4Cj4HoE3bG0djTHftuutXvZYzMhuWXGILkY3dfSQP2PQRwDY2CHBwAtc9CMveIdyAYE9liYF9MyjK4-pnLJvNiI5fxQvpfWBjague_-ffmFsmvqO4UjUfpZVKkLK-RjWdHtYl2EyXOejT6O4pJMANahVXJPPC97fKzKfU9pOMIVK1mMnv6TKpvz9smq7Hdg2XUjuRJ6FEHOBp3-qtX_FIGYSzQAhBlD4ITpi8jAFN4BMV-rxTs9kaxSLu_TT7OIw9JWfm40z9foBvgeDrlOYmTG1q4GI5BwteQ_31TngFkY8vDzeDxr8HBpFEogw1aAvHBJifARzR7t48FG3J9EENNGDG1LddvRgMB3a-55TQJlho6MGXodT3LRGLXoikySHjPcDEl9PbncUnkKvPh97IcdCg1OkwTnbZkgj4zyAdafjhW7vtwS9D-FIdN0g8vJHS7pSvFThtLfqCHwUuCS-Bz6cx-r1mUuUEidmz3w94clBE9EG2ZvToLmqDLy93hOM6raU6NdIlCVhnQ-fjMogknvtA7qEm5cdC8I3pQlCGw"
+
         var token: String = ""
 
         //var ListagemEtiquetas :   HashMap<Int,String> = HashMap()
@@ -153,7 +154,15 @@ class LoginActivity : AppCompatActivity() {
             if (jsonObject.has("success")) {//if (jsonObject.getString("status") == "true") {
                 token=jsonObject.getJSONObject("success").getString("token")
                 saveInfo(response)
-                Toast.makeText(this@LoginActivity,"Bem Vindo", Toast.LENGTH_LONG).show()
+                Utils.minhaTosta(
+                    this@LoginActivity,
+                    R.drawable.ic_check_circle_24,
+                    "Benvindo!",
+                    "long",
+                    "sucesso"
+                )
+                    .show()
+                //Toast.makeText(this@LoginActivity,"Bem Vindo", Toast.LENGTH_LONG).show()
                 val intent = Intent(this, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)

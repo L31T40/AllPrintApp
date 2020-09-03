@@ -19,6 +19,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
+import com.example.allprintapp.LoginActivity
 import com.example.allprintapp.R
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_DESCRICAO
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_DESCRICAOCURTA
@@ -29,6 +30,7 @@ import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Compani
 import com.example.allprintapp.ui.listaprodutos.ListagemProdutosFragment.Companion.EXTRA_URL
 import com.example.allprintapp.models.DistritosModel
 import com.example.allprintapp.models.ProdutoModel
+import com.example.allprintapp.ui.utils.Utils
 import com.example.allprintapp.ui.utils.Utils.Companion.cortaString
 import com.example.loadmoreexample.Constant
 import com.squareup.picasso.Picasso
@@ -41,6 +43,10 @@ class ProdutosRecyclerAdapter(private val mContext: Context,
     private var mListener: OnItemClickListener? = null
     // private var mListaProdutos: ArrayList<ProdutosLista>? = null
     private var mDistritos: java.util.ArrayList<DistritosModel>?=null
+
+    val mLocais = LoginActivity.ListagemDistritos
+    var mDistrito: String? = null
+    var mConcelho: String? = null
 
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -115,16 +121,32 @@ class ProdutosRecyclerAdapter(private val mContext: Context,
         if (holder.itemViewType == Constant.VIEW_TYPE_ITEM) {
             val currentItem = mProdutosListagemModel[position]
             //val currentPlace = mListagemDistritos[position]
+            var idcompleto = currentItem.id
+
+
+            val index = mLocais.indexOfFirst { it.prefixo == idcompleto?.let { it1 ->
+                Utils.cortaStringAfter(
+                    it1, "_")
+            }
+            } // -1 if not found
+            if (index >= 0) {
+                val locais = mLocais[index]
+                mDistrito = locais.distrito
+                mConcelho = locais.concelho
+
+            }
 
             val id = currentItem.id?.let { cortaString(it,"_") }
             val nome = currentItem.nome
             val preco = currentItem.preco
-            //val category = currentItem.category
+            val concelho = mConcelho
             val imageUrl = currentItem.imageUrl
 
             holder.mTextViewID.text = id
             holder.mTextViewName.text = nome
             holder.mTextViewPrice.text = preco
+            holder.mTextViewConcelho.text = mConcelho
+            holder.mTextViewDistrito.text = mDistrito
             //holder.mTextViewCategory.text = category
             Log.i(
                 TAG,
@@ -153,13 +175,16 @@ class ProdutosRecyclerAdapter(private val mContext: Context,
         var mImageView: ImageView
         var mTextViewID: TextView
         var mTextViewName: TextView
+        var mTextViewConcelho: TextView
+        var mTextViewDistrito: TextView
         var mTextViewPrice: TextView
         // var mTextViewCategory: TextView
         init {
             mImageView = itemView.findViewById(R.id.imageViewProduto)
             mTextViewID = itemView.findViewById(R.id.textViewRef)
             mTextViewName = itemView.findViewById(R.id.textViewConcelho)
-            mTextViewName = itemView.findViewById(R.id.textViewDistrito)
+            mTextViewConcelho = itemView.findViewById(R.id.textViewConcelho)
+            mTextViewDistrito = itemView.findViewById(R.id.textViewDistrito)
             //mTextViewCategory = itemView.findViewById(R.id.textView)
             mTextViewPrice = itemView.findViewById(R.id.textViewPreco)
 

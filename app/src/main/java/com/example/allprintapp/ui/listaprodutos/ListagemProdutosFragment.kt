@@ -172,10 +172,10 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
                 //navigateToFragment(ShoppingCartFragment.newInstance())
                 val x = ShoppingCart.getShoppingCartSize()
                 if (ShoppingCart.getShoppingCartSize() <= 0) {
-                    minhaTosta(mContext, R.drawable.ic_seta1, "O Carrinho de Compras está Vazio!", "long", "erro")
+                    minhaTosta(mContext, R.drawable.ic_error_24, "O Carrinho de Compras está Vazio!", "long", "erro")
                         .show()
 
-                    Toast.makeText(context, "O Carrinho de Compras está Vazio!", Toast.LENGTH_LONG).show()
+                    //Toast.makeText(context, "O Carrinho de Compras está Vazio!", Toast.LENGTH_LONG).show()
                 } else {
                     navigateToFragment(ShoppingCartFragment.newInstance())
                 }
@@ -399,8 +399,6 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
 
     //Faz o parse do JSON de informção dos produtos através do middleware usando um token OAUTH2
     fun getDataProdutosFiltro() {
-        val token =
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiN2ViYTk4YmI3YTk4OWI2NjI1YThkZjAyOTA3MWMxZTI3NzZkY2UzNmRlZmM1ZGE5Nzk0MjliMTNhNGUzN2RjODFiODkwOGNlYzNjY2M5YjgiLCJpYXQiOjE1OTM2Mzc4ODYsIm5iZiI6MTU5MzYzNzg4NiwiZXhwIjoxNjI1MTczODg2LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.F5RId5LSLp19uFpxXrpU2KG1dvvE9so9NFc_HTrPCsUrg-ObcHh4tJ1RRtURcMx4qmoZ0z4tk9bfGGB9TM2DjsT2tfDDokqiGdTYdboHmqkSlGKTMFZ897CFtYBlK_ETn4Cj4HoE3bG0djTHftuutXvZYzMhuWXGILkY3dfSQP2PQRwDY2CHBwAtc9CMveIdyAYE9liYF9MyjK4-pnLJvNiI5fxQvpfWBjague_-ffmFsmvqO4UjUfpZVKkLK-RjWdHtYl2EyXOejT6O4pJMANahVXJPPC97fKzKfU9pOMIVK1mMnv6TKpvz9smq7Hdg2XUjuRJ6FEHOBp3-qtX_FIGYSzQAhBlD4ITpi8jAFN4BMV-rxTs9kaxSLu_TT7OIw9JWfm40z9foBvgeDrlOYmTG1q4GI5BwteQ_31TngFkY8vDzeDxr8HBpFEogw1aAvHBJifARzR7t48FG3J9EENNGDG1LddvRgMB3a-55TQJlho6MGXodT3LRGLXoikySHjPcDEl9PbncUnkKvPh97IcdCg1OkwTnbZkgj4zyAdafjhW7vtwS9D-FIdN0g8vJHS7pSvFThtLfqCHwUuCS-Bz6cx-r1mUuUEidmz3w94clBE9EG2ZvToLmqDLy93hOM6raU6NdIlCVhnQ-fjMogknvtA7qEm5cdC8I3pQlCGw"
 
 
 

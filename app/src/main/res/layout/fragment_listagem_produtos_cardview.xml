@@ -32,7 +32,8 @@
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Distrito" />
+                android:text="Distrito"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textViewConcelho"

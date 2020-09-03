@@ -4,6 +4,7 @@ import android.R
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.util.TypedValue
@@ -13,12 +14,14 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import java.net.MalformedURLException
 import java.net.URL
 import java.text.ParsePosition
 import java.text.SimpleDateFormat
+
 
 class Utils(var ma: Activity) {
 
@@ -213,13 +216,13 @@ class Utils(var ma: Activity) {
             return hour
         }
 
-        fun cortaStringAfter(str:String, token:String):String {
+        fun cortaStringAfter(str: String, token: String):String {
             //val str1 = str.substring(str.indexOf(token) + 1)
             //str1.trim { it <= ' ' }
             return str.substringBefore(token)+"_"
         }
 
-        fun cortaString(str:String, token:String):String {
+        fun cortaString(str: String, token: String):String {
             val str1 = str.substring(str.indexOf(token) + 1)
             str1.trim { it <= ' ' }
             return str1
@@ -232,8 +235,7 @@ class Utils(var ma: Activity) {
             toastLength: String,
             succTypeColor: String
         ): Toast {
-            val toast: Toast
-            toast = if (toastLength == "short") {
+            val toast: Toast = if (toastLength == "short") {
                 Toast.makeText(mAct, "$toastText   ", Toast.LENGTH_SHORT)
             } else {
                 Toast.makeText(mAct, "$toastText   ", Toast.LENGTH_LONG)
@@ -267,14 +269,27 @@ class Utils(var ma: Activity) {
             tView.setOnClickListener { toast.cancel() }
             tView.invalidate()
             if (succTypeColor == "erro") {
+                val backgroundColor =
+                    ResourcesCompat.getColor(tView.getResources(), R.color.holo_red_dark, null)
+                tView.getBackground().setColorFilter(backgroundColor, PorterDuff.Mode.SRC_IN)
                 mText.setTextColor(Color.parseColor("#ffffff"))
+                //mText.setTextColor(Color.parseColor("#f54242"))
                 // tView.setBackground(mAct.getResources().getDrawable(R.drawable.ic_tosta_erro));
                 // mensagem de erro
             }
             if (succTypeColor == "sucesso") {
-                mText.setTextColor(Color.parseColor("#ffffff"))
-                // tView.setBackground(mAct.getResources().getDrawable(R.drawable.ic_tosta));
                 // mensagem sucesso
+                val backgroundColor =
+                    ResourcesCompat.getColor(tView.getResources(), R.color.holo_orange_dark, null)
+                tView.getBackground().setColorFilter(backgroundColor, PorterDuff.Mode.SRC_IN)
+                mText.setTextColor(Color.parseColor("#ffffff"))
+                //tView.setShadowLayer(0, 0, 0, Color.TRANSPARENT)
+                //mText.setTextColor(Color.parseColor("#ffffff"))
+                // tView.setBackground(mAct.getResources().getDrawable(R.drawable.ic_tosta));
+
+                //   tView.setBackgroundColor(Color.DKGRAY)
+                //  mText.setShadowLayer(0F, 0F, 0F, Color.TRANSPARENT)
+                //  mText.setTextColor(Color.WHITE)
             }
             return toast
         }

@@ -255,11 +255,11 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
                     parent: AdapterView<*>,
                     view: View, position: Int, id: Long
                 ) {
-                    Toast.makeText(
-                        context,
-                        getString(R.string.selected_item) + " " +
-                                "" + listaDistritos[position], Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        context,
+//                        getString(R.string.selected_item) + " " +
+//                                "" + listaDistritos[position], Toast.LENGTH_SHORT
+//                    ).show()
                     selectedDistrito = listaDistritos[position]
                     spinnerConcelhos()
                 }
@@ -309,11 +309,11 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
                     parent: AdapterView<*>,
                     view: View?, position: Int, id: Long
                 ) {
-                    Toast.makeText(
-                        context,
-                        getString(R.string.selected_item) + " " +
-                                "" + listaConcelhos[position], Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        context,
+//                        getString(R.string.selected_item) + " " +
+//                                "" + listaConcelhos[position], Toast.LENGTH_SHORT
+//                    ).show()
                     //selectedConcelho = getString(R.string.selected_item)
                     selectedConcelho = listaConcelhos[position]
                 }
@@ -354,11 +354,11 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
                     parent: AdapterView<*>,
                     view: View?, position: Int, id: Long
                 ) {
-                    Toast.makeText(
-                        context,
-                        getString(R.string.selected_item) + " " +
-                                "" + mCategoria[position], Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        context,
+//                        getString(R.string.selected_item) + " " +
+//                                "" + mCategoria[position], Toast.LENGTH_SHORT
+//                    ).show()
                     //selectedCategoria = getString(R.string.selected_item)
                     selectedCategoria = listaCategorias[position]
                 }
@@ -400,11 +400,11 @@ class FiltroProdutosFragment  : Fragment(), AdapterView.OnItemSelectedListener {
                     parent: AdapterView<*>,
                     view: View?, position: Int, id: Long
                 ) {
-                    Toast.makeText(
-                        context,
-                        getString(R.string.selected_item) + " " + " " + mEtiqueta[position].nome,
-                        Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        context,
+//                        getString(R.string.selected_item) + " " + " " + mEtiqueta[position].nome,
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                     selectedEtiqueta = getString(R.string.selected_item)
                     chipsEtiquetas2(listaEtiquetas[position])
                 }

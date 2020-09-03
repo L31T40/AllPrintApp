@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment
 import com.example.allprintapp.LoginActivity.Companion.ListagemDistritos
 import com.example.allprintapp.R
 import com.example.allprintapp.ui.utils.Utils.Companion.cortaString
+import com.example.allprintapp.ui.utils.Utils.Companion.cortaStringAfter
 import com.squareup.picasso.Picasso
 
 
@@ -67,18 +68,19 @@ interface OnItemClickListener {
 
 
 
-//
-//        val index = mLocais.indexOfFirst { it.prefixo == "1AV3AN_" } // -1 if not found
-//        if (index >= 0) {
-//            val locais = mLocais[index]
-//            mDistrito = locais.distrito
-//            mConcelho = locais.concelho
-//
-//        }
+
+        val index = mLocais.indexOfFirst { it.prefixo == cortaStringAfter(arguments?.getString(EXTRA_ID).toString(),"_") } // -1 if not found
+        if (index >= 0) {
+            val locais = mLocais[index]
+            mDistrito = locais.distrito
+            mConcelho = locais.concelho
+
+        }
 
         val textViewId: TextView = view.findViewById(R.id.textViewRefDetalhes) as TextView
         val textId = arguments?.getString(EXTRA_ID)
         textViewId.text =  cortaString(textId.toString(),"_")
+
 
         val textViewDistrito: TextView = view.findViewById(R.id.textViewDistritoDetalhes) as TextView
         textViewDistrito.text = "Distrito: "+mDistrito.toString()
