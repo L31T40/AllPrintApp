@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fffffdff"
-    tools:context=".carrinho.ShoppingCartFragment">
+    tools:context=".carrinho.CarrinhoComprasFragment">
 
 <!--
     <com.google.android.material.appbar.AppBarLayout
@@ -72,6 +72,7 @@
 
 
         <Button
+            android:id="@+id/btn_checkout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

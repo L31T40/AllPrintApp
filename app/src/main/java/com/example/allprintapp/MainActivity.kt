@@ -15,6 +15,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.allprintapp.ui.encomendas.CriarEncomendaFragment
 import com.example.allprintapp.ui.encomendas.ListaEncomendasFragment
 import com.example.allprintapp.ui.filtrosprodutos.FiltroProdutosFragment
 import com.example.allprintapp.ui.listaprodutos.DetalhesProdutoFragment
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity(),
     ProdutosRecyclerAdapter.OnItemClickListener,
     DetalhesProdutoFragment.OnItemClickListener,
     FiltroProdutosFragment.OnItemClickListener,
+    CriarEncomendaFragment.OnItemClickListener,
     ListaEncomendasFragment.OnItemClickListener{
 
 
@@ -70,7 +72,7 @@ class MainActivity : AppCompatActivity(),
             setOf(
                 R.id.nav_home,
                 //R.id.nav_categorias,
-                R.id.nav_loja,
+               // R.id.nav_loja,
                 // R.id.nav_pesquisa,
                // R.id.nav_logout
             ),

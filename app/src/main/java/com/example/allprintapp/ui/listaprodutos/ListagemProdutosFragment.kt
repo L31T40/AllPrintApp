@@ -24,13 +24,13 @@ import com.android.volley.toolbox.Volley
 import com.example.allprintapp.LoginActivity.Companion.ListagemDistritos
 import com.example.allprintapp.LoginActivity.Companion.token
 import com.example.allprintapp.R
-import com.example.allprintapp.carrinho.CartItem
-import com.example.allprintapp.carrinho.ShoppingCartFragment
+import com.example.allprintapp.carrinho.ItensCarrinho
+import com.example.allprintapp.carrinho.CarrinhoComprasFragment
 import com.example.allprintapp.models.DistritosModel
 import com.example.allprintapp.models.ProdutoModel
 import com.example.allprintapp.ui.filtrosprodutos.FiltroProdutosFragment.Companion.stringPesquisa
 import com.example.allprintapp.ui.utils.Utils.Companion.minhaTosta
-import com.example.ethieladiassa.shoppingcart.ShoppingCart
+import com.example.allprintapp.carrinho.CarrinhoCompras
 import io.paperdb.Paper
 import kotlinx.android.synthetic.main.fragment_listagem_produtos_recyclerview.*
 import org.json.JSONArray
@@ -54,7 +54,7 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
 
     private var pDialog: ProgressDialog? = null
 
-    var mModelProdutoCart: ArrayList<CartItem>? = null
+    var mModelProdutoCart: ArrayList<ItensCarrinho>? = null
     var mRecyclerView: RecyclerView? = null
     var mProdutosAdapter: ProdutosRecyclerAdapter? = null
 
@@ -98,6 +98,7 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
         const val EXTRA_STOCK = "stock_quantity"
         const val STRING_PESQUISA: String = ""
         var flag_pesquisa=false
+        var qt:String="0"
     }
 
 
@@ -154,6 +155,7 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
 //        }
 
 
+
         return view
 
     }
@@ -170,14 +172,20 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
             }
             R.id.menu_carrinho -> {
                 //navigateToFragment(ShoppingCartFragment.newInstance())
-                val x = ShoppingCart.getShoppingCartSize()
-                if (ShoppingCart.getShoppingCartSize() <= 0) {
-                    minhaTosta(mContext, R.drawable.ic_error_24, "O Carrinho de Compras está Vazio!", "long", "erro")
+                val x = CarrinhoCompras.getShoppingCartSize()
+                if (CarrinhoCompras.getShoppingCartSize() <= 0) {
+                    minhaTosta(
+                        mContext,
+                        R.drawable.ic_error_24,
+                        "O Carrinho de Compras está Vazio!",
+                        "long",
+                        "erro"
+                    )
                         .show()
 
                     //Toast.makeText(context, "O Carrinho de Compras está Vazio!", Toast.LENGTH_LONG).show()
                 } else {
-                    navigateToFragment(ShoppingCartFragment.newInstance())
+                    navigateToFragment(CarrinhoComprasFragment.newInstance())
                 }
                 true
             }
@@ -250,7 +258,6 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
     private fun setAdapter() {
         if (pDialog!!.isShowing) pDialog!!.dismiss()
         mRecyclerView = view?.findViewById(R.id.recycler_view_lista_produtos)
-
         mProdutosAdapter = mModelProdutoListagens?.let { ProdutosRecyclerAdapter(mContext, it) }
         mProdutosAdapter?.notifyDataSetChanged()
         recycler_view_lista_produtos.adapter = mProdutosAdapter
@@ -387,8 +394,8 @@ open class ListagemProdutosFragment : Fragment(),ProdutosRecyclerAdapter.OnItemC
 
     override fun onItemClick(position: Int) {
         TODO("Not yet implemented")
-    }
 
+    }
     override fun recreate() {
         TODO("Not yet implemented")
     }

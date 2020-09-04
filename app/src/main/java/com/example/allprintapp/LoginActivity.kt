@@ -18,6 +18,7 @@ import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.allprintapp.Login.PreferenceHelper
+import com.example.allprintapp.carrinho.ItensCarrinho
 import com.example.allprintapp.models.*
 import com.example.allprintapp.ui.utils.Utils
 import org.json.JSONArray
@@ -50,6 +51,7 @@ class LoginActivity : AppCompatActivity() {
         var ListagemCategoriasCompleta = ArrayList<ListaCategoriasCompletaModel>()
         var ListagemEtiquetas = ArrayList<EtiquetasModel>()
         var ListagemEtiquetasCompleta = ArrayList<EtiquetasCompletaModel>()
+        var carrinho=ArrayList<ItensCarrinho>()
         var navigateToResults: Boolean = false
         // var ListagemCategorias :  HashMap<Int,String> = HashMap()
 
